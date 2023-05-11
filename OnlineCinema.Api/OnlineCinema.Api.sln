@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCinema.WebApi", "Onli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCinema.Data", "OnlineCinema.Data\OnlineCinema.Data.csproj", "{C88BA452-A8EA-4781-B6E8-C976B9FDBA7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCinema.Models", "OnlineCinema.Models\OnlineCinema.Models.csproj", "{E8CA5AA2-8A2B-4BA9-A6E2-C54FCCF14C59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCinema.Logic", "OnlineCinema.Models\OnlineCinema.Logic.csproj", "{E8CA5AA2-8A2B-4BA9-A6E2-C54FCCF14C59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
