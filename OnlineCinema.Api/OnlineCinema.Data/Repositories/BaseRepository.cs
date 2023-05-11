@@ -87,9 +87,9 @@ namespace OnlineCinema.Data.Repositories
             {
                 await _context.SaveChangesAsync();
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException(ex.Message);
+                throw new ApplicationException(ex.Message);
             }
         }
     }
