@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineCinema.Data.Entities
 {
-    public class MovieEntity
+    public class MovieEntity : BaseEntity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public string? Description { get; set; }
@@ -23,11 +22,15 @@ namespace OnlineCinema.Data.Entities
         /// <summary>
         /// ссылка на картинку-заставку
         /// </summary>
-        public string MoviePoster { get; set; }
+        public string MoviePosterUrl { get; set; }
 
         /// <summary>
         /// сериал или нет
         /// </summary>
         public bool IsSeries { get; set; }
+
+        public string? ContentUrl { get; set; }
+
+        public List<MovieSeasonEntity> Seasons { get; set; } = new();
     }
 }
