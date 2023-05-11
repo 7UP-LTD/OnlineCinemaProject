@@ -4,11 +4,19 @@ using System.Linq.Expressions;
 
 namespace OnlineCinema.Data.Repositories
 {
+    /// <summary>
+    /// Реализация базового репозитория <see cref="IBaseRepository{T}"/> для работы с сущностями типа <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">Тип сущности, с которой работает репозиторий.</typeparam>
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> dbSet;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="BaseRepository{T}"/>.
+        /// </summary>
+        /// <param name="db">Контекст базы данных <see cref="ApplicationDbContext"/>.</param>
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context;
