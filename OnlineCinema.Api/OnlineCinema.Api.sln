@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCinema.WebApi", "Onli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineCinema.Data", "OnlineCinema.Data\OnlineCinema.Data.csproj", "{C88BA452-A8EA-4781-B6E8-C976B9FDBA7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCinema.Logic", "OnlineCinema.Logic\OnlineCinema.Logic.csproj", "{CE4A65F7-EA2D-459B-A909-9B200D8C322D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C88BA452-A8EA-4781-B6E8-C976B9FDBA7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C88BA452-A8EA-4781-B6E8-C976B9FDBA7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C88BA452-A8EA-4781-B6E8-C976B9FDBA7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE4A65F7-EA2D-459B-A909-9B200D8C322D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4A65F7-EA2D-459B-A909-9B200D8C322D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4A65F7-EA2D-459B-A909-9B200D8C322D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4A65F7-EA2D-459B-A909-9B200D8C322D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
