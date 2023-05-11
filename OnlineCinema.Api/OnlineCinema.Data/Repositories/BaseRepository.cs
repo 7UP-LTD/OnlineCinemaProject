@@ -89,7 +89,7 @@ namespace OnlineCinema.Data.Repositories
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new InvalidOperationException("Ошибка сохранения данных: " + ex.Message);
             }
         }
     }
