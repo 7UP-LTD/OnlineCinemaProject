@@ -2,7 +2,7 @@
 
 namespace OnlineCinema.Data.Entities
 {
-    public class MovieTagEntity
+    public class MovieTagEntity : BaseEntity
     {
         public Guid TagId { get; set; }
         public DicTagEntity Tag { get; set; }

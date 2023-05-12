@@ -39,11 +39,11 @@ namespace OnlineCinema.Data.Entities
        
         public List<MovieTagEntity> Tags { get; set; } = new();
         
-        public List<DicActorEntity> Actors { get; set; } = new();
+        public List<MovieActorEntity> Actors { get; set; } = new();
         
-        public List<DicDirectorEntity> Directors { get; set; } = new();
+        public List<MovieDirectorEntity> Directors { get; set; } = new();
         
-        public List<DicWriterEntity> Writers { get; set; } = new();
+        public List<MovieWriterEntity> Writers { get; set; } = new();
         
     }
 }
