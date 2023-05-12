@@ -9,10 +9,10 @@ namespace OnlineCinema.Logic.Models
 
         public int Year { get; set; }
 
-        public string Genre { get; set; }
-
         public double Rating { get; set; }
 
         public List<Actor> Actors { get; set; }
+
+        public List<Genre> Genres { get; set; }
     }
 }
