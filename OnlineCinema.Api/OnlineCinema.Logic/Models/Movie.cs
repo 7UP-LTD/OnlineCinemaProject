@@ -15,12 +15,20 @@ namespace OnlineCinema.Logic.Models
 
         public bool IsViewed { get; set; }
 
+        public string PosterUrl { get; set; }
+
         public List<Actor> Actors { get; set; }
 
         public List<Director> Directors { get; set; }
 
-        public List<Genre> Genres { get; set; }
-
         public List<Country> Countries { get; set; }
+
+        public ICollection<MovieComment> MovieComments { get; set; }
+
+        public ICollection<MovieMark> MovieMarks { get; set; }
+
+        public ICollection<Genre> MovieGenres { get; set; }
+
+        public ICollection<MovieTag> MovieTags { get; set; }
     }
 }
