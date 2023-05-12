@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using OnlineCinema.Data;
 using OnlineCinema.WebApi.ApiDescriptors;
 using System.Reflection;
 
@@ -15,6 +17,10 @@ namespace OnlineCinema.WebApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", ApiDescriptor.GetApiInfo(builder.Configuration));
@@ -41,7 +47,6 @@ namespace OnlineCinema.WebApi
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
