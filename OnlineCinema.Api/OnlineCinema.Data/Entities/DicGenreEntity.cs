@@ -1,6 +1,6 @@
 ﻿namespace OnlineCinema.Data.Entities
 {
-    public class DicGenresEntity : BaseEntity
+    public class DicGenreEntity : BaseEntity
     {
         public string Name { get; set; }
 
