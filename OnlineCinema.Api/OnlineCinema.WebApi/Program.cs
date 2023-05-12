@@ -13,15 +13,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace OnlineCinema.WebApi
 {
-    /// <summary>
-    /// ������� ����� ����������
-    /// </summary>
     public static class Program
     {
-        /// <summary>
-        /// T���� ����� � ����������.
-        /// </summary>
-        /// <param name="args">��������� ��������� ������.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +30,6 @@ namespace OnlineCinema.WebApi
                 c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             });
 
-            // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
