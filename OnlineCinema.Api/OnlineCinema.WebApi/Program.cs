@@ -5,15 +5,10 @@ using System.Reflection;
 
 namespace OnlineCinema.WebApi
 {
-    /// <summary>
-    /// Главный класс приложения
-    /// </summary>
+
     public static class Program
     {
-        /// <summary>
-        /// Tочка входа в приложение.
-        /// </summary>
-        /// <param name="args">Аргументы командной строки.</param>
+   
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
