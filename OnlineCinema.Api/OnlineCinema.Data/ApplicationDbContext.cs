@@ -98,6 +98,60 @@ namespace OnlineCinema.Data
             modelBuilder.Entity<PersonEntity>()
                 .HasKey(x => x.Id);
          
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Seasons)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Comments)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Genres)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Tags)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Actors)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Directors)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEntity>()
+                .HasMany(x => x.Writers)
+                .WithOne(x => x.Movie)
+                .HasForeignKey(x => x.MovieId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieSeasonEntity>()
+                .HasMany(x => x.Episodes)
+                .WithOne(x => x.MovieSeason)
+                .HasForeignKey(x => x.SeasonId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<MovieEpisodeEntity>()
+                .HasMany(x => x.Comments)
+                .WithOne(x => x.Episode)
+                .HasForeignKey(x => x.EpisodeId)
+                .OnDelete(DeleteBehavior.Cascade);
+     
         }
     }
 }
