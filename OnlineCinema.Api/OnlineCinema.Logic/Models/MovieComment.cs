@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlineCinema.Logic.Models
 {
-    public class MovieComments
+    public class MovieComment
     {
-        public int IdMovieComments { get; set; }
+        public int IdMovieComment { get; set; }
 
         public int MovieId { get; set; }
 

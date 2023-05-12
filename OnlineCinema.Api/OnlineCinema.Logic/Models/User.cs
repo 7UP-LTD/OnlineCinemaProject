@@ -13,6 +13,15 @@ namespace OnlineCinema.Logic.Models
 
         public DateTime DateRegistered { get; set; }
 
-        public ICollection<MovieComments> MovieComment { get; set; }
+        public List<MovieComment> MovieComments { get; set; }
+
+        public List<Movie> FavoriteMovies { get; set; }
+
+        public List<Actor> FavoriteActors { get; set; }
+
+        public List<Director> FaroriteDirectors { get; set; }
+
+        public List<MovieMark> MoviesMarks { get; set; }
+
     }
 }
