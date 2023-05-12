@@ -17,7 +17,7 @@ namespace OnlineCinema.Data
         {
         }
 
-        public DbSet<UserEntity> Users { get; set; }
+        public override DbSet<UserEntity> Users { get; set; }
         public DbSet<UserFavoriteMovieEntity> UserFavoriteMovies { get; set; }
         public DbSet<UserFutureMovieEntity> UserFutureMovies { get; set; }
         public DbSet<UserMovieLikeEntity> UserMovieLikes { get; set; }
