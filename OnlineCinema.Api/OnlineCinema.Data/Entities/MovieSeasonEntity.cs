@@ -20,6 +20,7 @@ namespace OnlineCinema.Data.Entities
         public DateTime ReleaseDate { get; set; }
         
         public Guid MovieId { get; set; }
+        public MovieEntity Movie { get; set; }
         
         public List<MovieEpisodeEntity> Episodes { get; set; } = new();
     }

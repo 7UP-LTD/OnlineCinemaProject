@@ -1,19 +1,25 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data;
+using System;
+using System.IO;
 using OnlineCinema.WebApi.ApiDescriptors;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace OnlineCinema.WebApi
 {
     /// <summary>
-    /// Главный класс приложения
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public static class Program
     {
         /// <summary>
-        /// Tочка входа в приложение.
+        /// TпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
         /// </summary>
-        /// <param name="args">Аргументы командной строки.</param>
+        /// <param name="args">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);

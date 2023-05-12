@@ -2,10 +2,9 @@
 
 namespace OnlineCinema.Data.Entities
 {
-    public class DirectorEntity
+    public class DicDirectorEntity
     {
         public Guid PersonId { get; set; }
-
         public PersonEntity Person { get; set; }
     }
 }

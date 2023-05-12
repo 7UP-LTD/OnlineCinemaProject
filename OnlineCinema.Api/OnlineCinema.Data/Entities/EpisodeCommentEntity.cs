@@ -7,11 +7,9 @@ namespace OnlineCinema.Data.Entities
         public string CommentText { get; set; }
 
         public Guid UserId { get; set; }
-
-        public Guid EpisodeId { get; set; }
-        
         public UserEntity User { get; set; }
         
+        public Guid EpisodeId { get; set; }
         public MovieEpisodeEntity Episode { get; set; }
     }
 }

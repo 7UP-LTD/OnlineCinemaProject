@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineCinema.Data.Entities
 {
@@ -8,10 +9,12 @@ namespace OnlineCinema.Data.Entities
 
         public string? Description { get; set; }
         
-        public DateTime DateAdded { get; set; }
-       
         public string ContentUrl { get; set; }
         
         public Guid SeasonId { get; set; }
+        public MovieSeasonEntity MovieSeason { get; set; }
+        
+        public List<EpisodeCommentEntity> Comments { get; set; } = new();
+    
     }
 }

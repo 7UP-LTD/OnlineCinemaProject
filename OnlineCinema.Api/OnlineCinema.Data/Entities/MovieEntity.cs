@@ -32,5 +32,18 @@ namespace OnlineCinema.Data.Entities
         public string? ContentUrl { get; set; }
 
         public List<MovieSeasonEntity> Seasons { get; set; } = new();
+        
+        public List<MovieCommentEntity> Comments { get; set; } = new();
+        
+        public List<MovieGenreEntity> Genres { get; set; } = new();
+       
+        public List<MovieTagEntity> Tags { get; set; } = new();
+        
+        public List<DicActorEntity> Actors { get; set; } = new();
+        
+        public List<DicDirectorEntity> Directors { get; set; } = new();
+        
+        public List<DicWriterEntity> Writers { get; set; } = new();
+        
     }
 }
