@@ -7,4 +7,4 @@
 - [ ] Swagger для спецификации RESTful API;
 - [ ] MS SQL Субд для хранения данных;
 - [ ] ORM для доступа к данным Entity Framework Core 7;
-- [ ] Identity Server, сервер проверки подлинности.
+- [ ] ASP.NET Identity для аунтификации и авторизации.
