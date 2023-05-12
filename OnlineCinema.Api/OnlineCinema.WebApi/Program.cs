@@ -1,7 +1,13 @@
+using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data;
 using OnlineCinema.WebApi.ApiDescriptors;
 using System.Reflection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace OnlineCinema.WebApi
 {
@@ -39,6 +45,13 @@ namespace OnlineCinema.WebApi
             app.UseAuthorization();
 
             app.MapControllers();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                context.Database.Migrate();
+            }
 
             app.Run();
         }
