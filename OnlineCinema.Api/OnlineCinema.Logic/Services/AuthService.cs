@@ -8,16 +8,24 @@ using OnlineCinema.Logic.Services.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OnlineCinema.Logic.Services
 {
+    /// <summary>
+    /// Сервис аутентификации и авторизации.
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly UserManager<UserEntity> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Конструктор сервиса аутентификации и авторизации.
+        /// </summary>
+        /// <param name="userManager">Менеджер пользователей.</param>
+        /// <param name="mapper">Маппер.</param>
+        /// <param name="configuration">Конфигурация.</param>
         public AuthService(UserManager<UserEntity> userManager, IMapper mapper, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -25,6 +33,7 @@ namespace OnlineCinema.Logic.Services
             _configuration = configuration;
         }
 
+        /// <inheritdoc/>
         public async Task<UserManagerResponse> LoginUserAsync(LoginUserDto model)
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
@@ -66,6 +75,7 @@ namespace OnlineCinema.Logic.Services
             };
         }
 
+        /// <inheritdoc/>
         public async Task<UserManagerResponse> RegisterUserAsync(RegisterUserDto model)
         {
             if (model is null)
