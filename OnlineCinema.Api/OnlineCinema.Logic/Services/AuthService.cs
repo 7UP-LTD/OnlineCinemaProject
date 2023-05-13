@@ -43,11 +43,19 @@ namespace OnlineCinema.Logic.Services
                     Message = "Пользователь с таким именем пользователя не найден."
                 };
 
+            if (!user.EmailConfirmed)
+                return new UserManagerResponse
+                {
+                    Message = "Вход запрещён",
+                    Errors = new List<string> { $"Email пользователя {user.UserName} не подтвержден." }
+                };
+
             var result = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!result)
                 return new UserManagerResponse
                 {
-                    Message = "Неверный пароль."
+                    Message = "Вход запрещён",
+                    Errors = new List<string> { "Неверный пароль." }
                 };
 
             var claims = new[]
@@ -58,16 +66,13 @@ namespace OnlineCinema.Logic.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
-
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddDays(7),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
-
             var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
-
             return new UserManagerResponse
             {
                 Message = tokenAsString,
