@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Services.IServices;
@@ -16,14 +17,16 @@ namespace OnlineCinema.WebApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Конструктор контроллера аутентификации.
         /// </summary>
         /// <param name="authService">Сервис аутентификации.</param>
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
             _authService = authService;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -54,8 +57,9 @@ namespace OnlineCinema.WebApi.Controllers
 
                 return BadRequest(result);
             }
-            catch (Exception ex) // Нужен журнал логгирования для ex
+            catch (Exception ex)
             {
+                //TODO: Добавить жернал логгирования
                 var errorModel = new ErrorResponse
                 {
                     ErrorMessage = "Произошла ошибка при выполнении операции.",
@@ -86,8 +90,9 @@ namespace OnlineCinema.WebApi.Controllers
 
                 return BadRequest(result);
             }
-            catch (Exception ex) // Нужен журнал логгирования для ex
+            catch (Exception ex)
             {
+                //TODO: Добавить жернал логгирования
                 var errorModel = new ErrorResponse
                 {
                     ErrorMessage = "Произошла ошибка при выполнении операции.",
@@ -97,5 +102,38 @@ namespace OnlineCinema.WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
+
+        [HttpGet("ConfirmEmail")]
+        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+                    return NotFound();
+
+                var result = await _authService.ConfirmEmailAsync(userId, token);
+                if (result.IsSuccess)
+                {
+                    return Redirect($"{_configuration["AppUrl"]}/api/test/userconfirmemail?userid={userId}&token={token}");
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                //TODO: Добавить жернал логгирования
+                var errorModel = new ErrorResponse
+                {
+                    ErrorMessage = "Произошла ошибка при выполнении операции.",
+                    StatusCode = HttpStatusCode.InternalServerError,
+                };
+
+                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+            }
+        } 
     }
 }
