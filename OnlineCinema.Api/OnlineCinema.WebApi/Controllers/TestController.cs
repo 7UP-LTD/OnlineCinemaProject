@@ -23,5 +23,13 @@ namespace OnlineCinema.WebApi.Controllers
                 new TestUser {FirstName = "Amely", LastName = "Blant"}
             });
         }
+
+        [HttpGet("UserConfirmEmail")]
+        [AllowAnonymous]
+        public IActionResult UserConfirmEmail(string userId, string token)
+        {
+            var userTest = new TestUser { FirstName = userId, LastName = token };
+            return Ok(userTest);
+        }
     }
 }
