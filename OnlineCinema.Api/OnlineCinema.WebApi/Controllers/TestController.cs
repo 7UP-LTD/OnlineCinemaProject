@@ -5,6 +5,9 @@ using System.Security.Claims;
 
 namespace OnlineCinema.WebApi.Controllers
 {
+    /// <summary>
+    /// Контроллер для теста.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
@@ -12,6 +15,10 @@ namespace OnlineCinema.WebApi.Controllers
     [Authorize]
     public class TestController : ControllerBase
     {
+        /// <summary>
+        /// Проверка получения инфы для авторизованных пользователей.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -24,6 +31,12 @@ namespace OnlineCinema.WebApi.Controllers
             });
         }
 
+        /// <summary>
+        /// Проверка ссылки для подтверждения электронной почты.
+        /// </summary>
+        /// <param name="userId">ID пользователя.</param>
+        /// <param name="token">Токен для подтверждения пароля.</param>
+        /// <returns></returns>
         [HttpGet("UserConfirmEmail")]
         [AllowAnonymous]
         public IActionResult UserConfirmEmail(string userId, string token)
