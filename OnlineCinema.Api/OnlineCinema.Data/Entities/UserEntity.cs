@@ -1,19 +1,26 @@
-﻿using OnlineCinema.Data.Enums;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace OnlineCinema.Data.Entities
 {
-    public class UserEntity : BaseEntity
+    /// <summary>
+    /// Представляет сущность пользователя в приложении. 
+    /// Наследование от IdentityUser с переопределением ID на Guid.
+    /// </summary>
+    public class UserEntity : IdentityUser<Guid>
     {
-        public string Email { get; set; }
-
-        public string Password { get; set; }
-
+        /// <summary>
+        /// Имя пользователя.
+        /// </summary>
         public string? Name { get; set; }
 
+        /// <summary>
+        /// Фамилию пользователя.
+        /// </summary>
         public string? Surname { get; set; }
 
+        /// <summary>
+        /// Иконка пользователя.
+        /// </summary>
         public string? Icon { get; set; }
-
-        public Role Role { get; set; }
     }
 }

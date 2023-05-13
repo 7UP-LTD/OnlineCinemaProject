@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data.Entities;
 
 namespace OnlineCinema.Data
@@ -6,7 +7,7 @@ namespace OnlineCinema.Data
     /// <summary>
     /// Класс контекста базы данных
     /// </summary>
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, Guid>
     {
         /// <summary>
         /// Конструктор класса ApplicationDbContext, который принимает настройки контекста базы данных.
@@ -16,7 +17,7 @@ namespace OnlineCinema.Data
         {
         }
 
-        public DbSet<UserEntity> Users { get; set; }
+        public override DbSet<UserEntity> Users { get; set; }
         public DbSet<UserFavoriteMovieEntity> UserFavoriteMovies { get; set; }
         public DbSet<UserFutureMovieEntity> UserFutureMovies { get; set; }
         public DbSet<UserMovieLikeEntity> UserMovieLikes { get; set; }
@@ -44,109 +45,103 @@ namespace OnlineCinema.Data
 
         public DbSet<PersonEntity> Persons { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<UserEntity>()
+            //обеспечивает выполнение базовой реализации метода OnModelCreating из класса IdentityDbContext. 
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserFavoriteMovieEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<UserEntity>()
-                .Property(x => x.Email)
-                .IsRequired();
-            modelBuilder.Entity<UserEntity>()
-                .Property(x => x.Password)
-                .IsRequired();
-            
-            modelBuilder.Entity<UserFavoriteMovieEntity>()
+            builder.Entity<UserFutureMovieEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<UserFutureMovieEntity>()
+            builder.Entity<UserMovieLikeEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<UserMovieLikeEntity>()
+            builder.Entity<UserMovieViewedEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<UserMovieViewedEntity>()
+            builder.Entity<MovieEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieActorEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieActorEntity>()
+            builder.Entity<MovieDirectorEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieDirectorEntity>()
+            builder.Entity<MovieWriterEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieWriterEntity>()
+            builder.Entity<MovieCommentEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieCommentEntity>()
+            builder.Entity<MovieGenreEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieGenreEntity>()
+            builder.Entity<MovieSeasonEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieSeasonEntity>()
+            builder.Entity<MovieTagEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieTagEntity>()
+            builder.Entity<MovieEpisodeEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<MovieEpisodeEntity>()
+            builder.Entity<EpisodeCommentEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<EpisodeCommentEntity>()
+            builder.Entity<NotificationEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<NotificationEntity>()
+            builder.Entity<DicActorEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<DicActorEntity>()
+            builder.Entity<DicDirectorEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<DicDirectorEntity>()
+            builder.Entity<DicGenreEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<DicGenreEntity>()
+            builder.Entity<DicTagEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<DicTagEntity>()
+            builder.Entity<DicWriterEntity>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<DicWriterEntity>()
-                .HasKey(x => x.Id);
-            modelBuilder.Entity<PersonEntity>()
+            builder.Entity<PersonEntity>()
                 .HasKey(x => x.Id);
          
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Seasons)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Comments)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Genres)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Tags)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Actors)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Directors)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEntity>()
+            builder.Entity<MovieEntity>()
                 .HasMany(x => x.Writers)
                 .WithOne(x => x.Movie)
                 .HasForeignKey(x => x.MovieId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieSeasonEntity>()
+            builder.Entity<MovieSeasonEntity>()
                 .HasMany(x => x.Episodes)
                 .WithOne(x => x.MovieSeason)
                 .HasForeignKey(x => x.SeasonId)
                 .OnDelete(DeleteBehavior.Cascade);
             
-            modelBuilder.Entity<MovieEpisodeEntity>()
+            builder.Entity<MovieEpisodeEntity>()
                 .HasMany(x => x.Comments)
                 .WithOne(x => x.Episode)
                 .HasForeignKey(x => x.EpisodeId)
