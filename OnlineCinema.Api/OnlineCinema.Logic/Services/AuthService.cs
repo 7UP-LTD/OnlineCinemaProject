@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OnlineCinema.Data.Entities;
@@ -18,6 +20,8 @@ namespace OnlineCinema.Logic.Services
     {
         private readonly UserManager<UserEntity> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IMessageService _message;
+        private readonly IEmailSender _emailService;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -26,11 +30,44 @@ namespace OnlineCinema.Logic.Services
         /// <param name="userManager">Менеджер пользователей.</param>
         /// <param name="mapper">Маппер.</param>
         /// <param name="configuration">Конфигурация.</param>
-        public AuthService(UserManager<UserEntity> userManager, IMapper mapper, IConfiguration configuration)
+        public AuthService(
+            UserManager<UserEntity> userManager, 
+            IMapper mapper, 
+            IConfiguration configuration, 
+            IMessageService message, 
+            IEmailSender emailService)
         {
             _userManager = userManager;
             _mapper = mapper;
             _configuration = configuration;
+            _message = message;
+            _emailService = emailService;
+        }
+
+        public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                return new UserManagerResponse
+                {
+                    Message = "Пользователь не найден"
+                };
+
+            var tokenDecoded = WebEncoders.Base64UrlDecode(token);
+            var normToken = Encoding.UTF8.GetString(tokenDecoded);
+            var result = await _userManager.ConfirmEmailAsync(user, normToken);
+            if (result.Succeeded)
+                return new UserManagerResponse
+                {
+                    Message = "Электронная почта подтверждена.",
+                    IsSuccess = true
+                };
+
+            return new UserManagerResponse
+            {
+                Message = "Почта не подтверждена.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
         }
 
         /// <inheritdoc/>
@@ -43,15 +80,7 @@ namespace OnlineCinema.Logic.Services
                     Message = "Пользователь с таким именем пользователя не найден."
                 };
 
-            if (!user.EmailConfirmed)
-                return new UserManagerResponse
-                {
-                    Message = "Вход запрещён",
-                    Errors = new List<string> { $"Email пользователя {user.UserName} не подтвержден." }
-                };
-
-            var result = await _userManager.CheckPasswordAsync(user, model.Password);
-            if (!result)
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 return new UserManagerResponse
                 {
                     Message = "Вход запрещён",
@@ -103,6 +132,12 @@ namespace OnlineCinema.Logic.Services
             var result = await _userManager.CreateAsync(userEntity, model.Password);
             if (result.Succeeded)
             {
+                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
+                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+                var confirmationLink = $"{_configuration["AppUrl"]}/api/auth/confirmemail?userid={userEntity.Id}&token={validEmailToken}";
+                var message = await _message.GetConfirmationEmailHtmlAsync(confirmationLink);
+                await _emailService.SendEmailAsync(userEntity.Email!, message.Subject, message.HtmlMessage);
                 return new UserManagerResponse
                 {
                     Message = "Пользователь успешно зарегистирован.",
