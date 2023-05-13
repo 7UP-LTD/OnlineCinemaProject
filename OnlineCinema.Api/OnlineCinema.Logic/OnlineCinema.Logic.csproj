@@ -17,4 +17,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\IHelpers\" />
+  </ItemGroup>
+
 </Project>
