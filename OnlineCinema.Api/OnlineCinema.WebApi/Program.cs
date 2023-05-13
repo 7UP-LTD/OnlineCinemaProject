@@ -62,6 +62,7 @@ namespace OnlineCinema.WebApi
                 };
             });
 
+            // Оказывается вот так отключается валидация автоматическая
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

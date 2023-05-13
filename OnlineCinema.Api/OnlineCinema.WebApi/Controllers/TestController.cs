@@ -44,5 +44,12 @@ namespace OnlineCinema.WebApi.Controllers
             var userTest = new TestUser { FirstName = userId, LastName = token };
             return Ok(userTest);
         }
+
+        [HttpGet("ForegetPassword")]
+        [AllowAnonymous]
+        public IActionResult ForegetPassword(string email, string token)
+        {
+            return Ok($"{email}   {token}");
+        }
     }
 }
