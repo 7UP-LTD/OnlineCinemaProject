@@ -8,7 +8,7 @@ namespace OnlineCinema.Logic.Dtos.AuthDtos
     public class ResetPasswordDto
     {
         /// <summary>
-        /// Токен доступа. Обязательное поле.
+        /// Токен доступа для сброса пароля. Обязательное поле.
         /// </summary>
         [Required(ErrorMessage = "Должен быть указан токен доступа.")]
         public string Token { get; set; } = null!;
