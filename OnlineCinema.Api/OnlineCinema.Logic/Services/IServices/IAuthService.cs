@@ -20,5 +20,20 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="model">DTO для аутентификации пользователя.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
         Task<UserManagerResponse> LoginUserAsync(LoginUserDto model);
+
+        /// <summary>
+        /// Подтверждение электроной почты.
+        /// </summary>
+        /// <param name="userId">ID пользователя.</param>
+        /// <param name="token">Токен доступа.</param>
+        /// <returns>Ответ менеджера пользователя.</returns>
+        Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token);
+
+        /// <summary>
+        /// Сменить пароль пользователя.
+        /// </summary>
+        /// <param name="email">Электронная почта для подтверждения смены пароля.</param>
+        /// <returns>Ответ менеджера пользователя.</returns>
+        Task<UserManagerResponse> ForgetPasswordAsync(string email);
     }
 }
