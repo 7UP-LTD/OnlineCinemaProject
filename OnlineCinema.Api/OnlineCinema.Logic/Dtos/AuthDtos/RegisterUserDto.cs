@@ -52,5 +52,8 @@ namespace OnlineCinema.Logic.Dtos.AuthDtos
         [Required]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Длина пароля должна быть не меньше 6 и не больше 50 символов.")]
         public string ConfirmPassword { get; set; } = null!;
+
+        [Required]
+        public string ConfirmRedirectUrl { get; set; } = null!;
     }
 }
