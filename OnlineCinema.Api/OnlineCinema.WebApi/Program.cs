@@ -68,6 +68,7 @@ namespace OnlineCinema.WebApi
             });
 
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
+            builder.Services.AddTransient<IMessageService, MessageService>();
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
