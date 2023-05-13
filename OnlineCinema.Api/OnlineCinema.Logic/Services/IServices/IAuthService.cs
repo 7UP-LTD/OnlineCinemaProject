@@ -33,7 +33,15 @@ namespace OnlineCinema.Logic.Services.IServices
         /// Сменить пароль пользователя.
         /// </summary>
         /// <param name="email">Электронная почта для подтверждения смены пароля.</param>
+        /// <param name="redirectUrl">URL для перенаправления для сброса пароля.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> ForgetPasswordAsync(string email);
+        Task<UserManagerResponse> ForgetPasswordAsync(string email, string redirectUrl);
+
+        /// <summary>
+        /// Сброс пароля пользователя.
+        /// </summary>
+        /// <param name="model">DTO для сброса пароля.</param>
+        /// <returns>Ответ менеджера пользователя.</returns>
+        Task<UserManagerResponse> ResetPasswordAsync(ResetPasswordDto model);
     }
 }

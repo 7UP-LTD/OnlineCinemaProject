@@ -71,6 +71,30 @@ namespace OnlineCinema.Logic.Services
         }
 
         /// <inheritdoc/>
+        public async Task<UserManagerResponse> ForgetPasswordAsync(string email, string redirectUrl)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return new UserManagerResponse
+                {
+                    Message = "Не удалось найти пользователя.",
+                    Errors= new List<string> {$"Пользователь с такой электронной почтой {email} не найден."}
+                };
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Encoding.UTF8.GetBytes(token);
+            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+            var resetLink = $"{_configuration["AppUrl"]}/{redirectUrl}?email={email}&token={validToken}";
+            var message = await _message.GetResetEmailHtmlAsync(resetLink);
+            await _emailService.SendEmailAsync(email, message.Subject, message.HtmlMessage);
+            return new UserManagerResponse
+            {
+                Message = "Письмо для сброса пароля было успешно отправлено.",
+                IsSuccess = true
+            };
+        }
+
+        /// <inheritdoc/>
         public async Task<UserManagerResponse> LoginUserAsync(LoginUserDto model)
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
@@ -118,7 +142,8 @@ namespace OnlineCinema.Logic.Services
             if (model.Password != model.ConfirmPassword)
                 return new UserManagerResponse
                 {
-                    Message = "Пароль пользователя и подтверждения пароля не совпадают.",
+                    Message = "Пароли не совпадают.",
+                    Errors = new List<string> { "Подтверждения пароля не совпадает с паролем." }
                 };
 
             var userEntity = _mapper.Map<UserEntity>(model);
@@ -126,7 +151,8 @@ namespace OnlineCinema.Logic.Services
             if (userName is not null)
                 return new UserManagerResponse
                 {
-                    Message = "Пользователь с таким именем пользователя уже существует."
+                    Message = "Пользователь уже существует.",
+                    Errors = new List<string> { $"Пользователь с таким именем пользователя уже существует {userEntity.UserName}." }
                 };
 
             var result = await _userManager.CreateAsync(userEntity, model.Password);
@@ -135,7 +161,7 @@ namespace OnlineCinema.Logic.Services
                 var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-                var confirmationLink = $"{_configuration["AppUrl"]}/api/auth/confirmemail?userid={userEntity.Id}&token={validEmailToken}";
+                var confirmationLink = $"{_configuration["AppUrl"]}/api/auth/confirmemail?userid={userEntity.Id}&token={validEmailToken}&redirecturl={model.ConfirmRedirectUrl}";
                 var message = await _message.GetConfirmationEmailHtmlAsync(confirmationLink);
                 await _emailService.SendEmailAsync(userEntity.Email!, message.Subject, message.HtmlMessage);
                 return new UserManagerResponse
@@ -149,12 +175,47 @@ namespace OnlineCinema.Logic.Services
                 return new UserManagerResponse
                 {
                     Message = "Пользователь не зарегистрирован.",
-                    Errors = new List<string> { $"Пользователь с почтой {userEntity.Email} уже существует." }
+                    Errors = new List<string> { $"Пользователь с электронной почтой {userEntity.Email} уже существует." }
                 };
 
             return new UserManagerResponse
             {
                 Message = "Пользователь не зарегистрирован.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        /// <inheritdoc/>
+        public async Task<UserManagerResponse> ResetPasswordAsync(ResetPasswordDto model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user is null)
+                return new UserManagerResponse
+                {
+                    Message = "Пользователь не найден",
+                    Errors = new List<string> { $"Пользователь с электронной почтой {model.Email} не найден." }
+                };
+
+            if (model.NewPassword != model.ConfirmPassword)
+                return new UserManagerResponse
+                {
+                    Message = "Пароли не совпадают",
+                    Errors = new List<string> { "Пароль и подтверждения пароля не совпадают." }
+                };
+
+            var tokenDecoded = WebEncoders.Base64UrlDecode(model.Token);
+            var normToken = Encoding.UTF8.GetString(tokenDecoded);
+            var result = await _userManager.ResetPasswordAsync(user, normToken, model.NewPassword);
+            if (result.Succeeded)
+                return new UserManagerResponse
+                {
+                    Message = "Пароль был успешно сброшен.",
+                    IsSuccess = true
+                };
+
+            return new UserManagerResponse
+            {
+                Message = "Неудалось сбросить пароль",
                 Errors = result.Errors.Select(e => e.Description)
             };
         }
