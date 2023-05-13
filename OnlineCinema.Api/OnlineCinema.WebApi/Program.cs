@@ -11,6 +11,7 @@ using OnlineCinema.Logic.Mapper;
 using OnlineCinema.Logic.Services.IServices;
 using OnlineCinema.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace OnlineCinema.WebApi
 {
@@ -65,6 +66,8 @@ namespace OnlineCinema.WebApi
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+
+            builder.Services.AddTransient<IEmailSender, EmailSenderService>();
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
