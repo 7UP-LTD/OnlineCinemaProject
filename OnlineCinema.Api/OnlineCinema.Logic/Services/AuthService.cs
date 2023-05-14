@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
@@ -8,6 +9,7 @@ using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -33,7 +35,7 @@ namespace OnlineCinema.Logic.Services
         /// <param name="mapper">Маппер.</param>
         /// <param name="configuration">Конфигурация.</param>
         public AuthService(
-            UserManager<UserEntity> userManager, 
+            UserManager<UserEntity> userManager,
             IMapper mapper, 
             IConfiguration configuration, 
             IMessageService message, 
@@ -108,6 +110,9 @@ namespace OnlineCinema.Logic.Services
 
             if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 return _managerResponse.EntryDenied(new List<string> { "Неверный пароль." });
+
+            if (!user.EmailConfirmed)
+                return _managerResponse.EntryDenied(new List<string> { $"Подтвердите электронную почту пользователя {user.Email} для входа." });
 
             var claims = new[]
             {

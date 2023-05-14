@@ -1,4 +1,5 @@
-﻿using OnlineCinema.Logic.Dtos.AuthDtos;
+﻿using Microsoft.AspNetCore.Authentication;
+using OnlineCinema.Logic.Dtos.AuthDtos;
 
 namespace OnlineCinema.Logic.Services.IServices
 {
