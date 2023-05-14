@@ -1,6 +1,6 @@
 ﻿using OnlineCinema.Logic.Dtos.AuthDtos;
 
-namespace OnlineCinema.Logic.ServiceResponses.IServiceResponses
+namespace OnlineCinema.Logic.Response.IResponse
 {
     /// <summary>
     /// Интерфейс для формирования ответов операций пользователя.

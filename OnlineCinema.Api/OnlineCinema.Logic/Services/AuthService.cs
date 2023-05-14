@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
-using OnlineCinema.Logic.ServiceResponses.IServiceResponses;
+using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

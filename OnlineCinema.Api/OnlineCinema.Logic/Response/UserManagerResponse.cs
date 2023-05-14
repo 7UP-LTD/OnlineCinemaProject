@@ -1,7 +1,7 @@
 ﻿using OnlineCinema.Logic.Dtos.AuthDtos;
-using OnlineCinema.Logic.ServiceResponses.IServiceResponses;
+using OnlineCinema.Logic.Response.IResponse;
 
-namespace OnlineCinema.Logic.ServiceResponses
+namespace OnlineCinema.Logic.Response
 {
     /// <summary>
     /// Класс, представляющий ответ операции управления пользователями.
