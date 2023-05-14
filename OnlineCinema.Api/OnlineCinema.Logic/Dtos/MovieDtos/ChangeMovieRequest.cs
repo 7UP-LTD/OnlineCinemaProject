@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineCinema.Logic.Models
+namespace OnlineCinema.Logic.Dtos.MovieDtos
 {
-    public class MovieDto
+    public class ChangeMovieRequest
     {
         public string Name { get; set; }
 
@@ -33,8 +33,6 @@ namespace OnlineCinema.Logic.Models
 
         public List<MovieSeasonDto> Seasons { get; set; } = new();
          
-        public List<MovieCommentDto> Comments { get; set; } = new();
-        
         public List<MovieGenreDto> Genres { get; set; } = new();
        
         public List<MovieTagDto> Tags { get; set; } = new();
@@ -44,6 +42,5 @@ namespace OnlineCinema.Logic.Models
         public List<MovieDirectorDto> Directors { get; set; } = new();
         
         public List<MovieWriterDto> Writers { get; set; } = new();
-
     }
 }

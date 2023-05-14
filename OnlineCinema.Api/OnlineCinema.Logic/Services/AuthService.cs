@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
@@ -8,8 +10,10 @@ using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Services.IServices;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace OnlineCinema.Logic.Services
 {

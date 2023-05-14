@@ -1,4 +1,5 @@
-﻿using OnlineCinema.Logic.Dtos.AuthDtos;
+﻿using System.Threading.Tasks;
+using OnlineCinema.Logic.Dtos.AuthDtos;
 
 namespace OnlineCinema.Logic.Services.IServices
 {

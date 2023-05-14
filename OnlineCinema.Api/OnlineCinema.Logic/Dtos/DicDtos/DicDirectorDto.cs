@@ -1,6 +1,7 @@
 ﻿using System;
+using OnlineCinema.Logic.Models;
 
-namespace OnlineCinema.Logic.Models
+namespace OnlineCinema.Logic.Dtos.DicDtos
 {
     public class DicDirectorDto
     {

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using OnlineCinema.Data.Entities;
+using OnlineCinema.Data.Filters;
+using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 
 namespace OnlineCinema.Logic.Mapper
@@ -19,6 +21,12 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<RegisterUserDto, UserEntity>()
                 .ForMember(src => src.NormalizedEmail, opt => opt.MapFrom(dest => dest.Email.ToUpper()))
                 .ForMember(src => src.NormalizedUserName, opt => opt.MapFrom(dest => dest.UserName.ToUpper()));
+
+            #endregion
+            
+            #region Movie
+
+            CreateMap<MovieFilter, MovieEntityFilter>();
 
             #endregion
         }
