@@ -7,6 +7,11 @@ using OnlineCinema.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using OnlineCinema.Logic.Mapper;
+using OnlineCinema.Logic.Services.IServices;
+using OnlineCinema.Logic.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace OnlineCinema.WebApi
 {
@@ -26,6 +31,7 @@ namespace OnlineCinema.WebApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
             });
+
             builder.Services.AddIdentity<UserEntity, RoleEntity>(config =>
             {
                 config.User.RequireUniqueEmail = true;
@@ -50,11 +56,24 @@ namespace OnlineCinema.WebApi
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidAudience = builder.Configuration["JWT:Audience"],
-                    ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]!))
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
                 };
             });
+
+            // Оказывается вот так отключается валидация автоматическая
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+            builder.Services.AddTransient<IEmailSender, EmailSenderService>();
+            builder.Services.AddTransient<IMessageService, MessageService>();
+
+            builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -69,7 +88,7 @@ namespace OnlineCinema.WebApi
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
