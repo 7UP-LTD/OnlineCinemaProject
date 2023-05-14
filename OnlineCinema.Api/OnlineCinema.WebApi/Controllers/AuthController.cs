@@ -39,15 +39,15 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Неправильный запрос для регистрации.</response>
         /// <response code="500">Ошибка на стороне севрера.</response>
         [HttpPost("Register")]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto model)
         {
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(new UserManagerResponse
+                    return BadRequest(new UserManagerDto
                     {
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
                     });
@@ -80,15 +80,15 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Неправильный запрос для регистрации.</response>
         /// <response code="500">Ошибка на стороне севрера.</response>
         [HttpPost("Login")]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
         {
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(new UserManagerResponse
+                    return BadRequest(new UserManagerDto
                     {
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
                     });
@@ -124,9 +124,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Неправильный запрос для подтверждения адреса электронной почты.</response>
         /// <response code="500">Ошибка на стороне сервера.</response>
         [HttpGet("ConfirmEmail")]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string token, string redirectUrl)
         {
@@ -165,9 +165,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Неправильный запрос для сброса пароля.</response>
         /// <response code="500">Ошибка на стороне сервера.</response>
         [HttpPost("ForegetPassword")]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ForgetPassword(string email, string redirectUrl)
         {
@@ -204,15 +204,15 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Неправильный запрос для сброса пароля.</response>
         /// <response code="500">Ошибка на стороне сервера.</response>
         [HttpPost("ResetPassword")]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(UserManagerResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto model)
         {
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(new UserManagerResponse
+                    return BadRequest(new UserManagerDto
                     {
                         Message = "Один или несколько полей не валидны.",
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
