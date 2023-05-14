@@ -6,7 +6,7 @@ namespace OnlineCinema.Logic.Response
     /// <summary>
     /// Класс, представляющий ответ операции управления пользователями.
     /// </summary>
-    internal class UserManagerResponse : IUserManagerResponse
+    public class UserManagerResponse : IUserManagerResponse
     {
         /// <inheritdoc/>
         public UserManagerDto ConfirmEmailFailed(List<string> errors) =>
