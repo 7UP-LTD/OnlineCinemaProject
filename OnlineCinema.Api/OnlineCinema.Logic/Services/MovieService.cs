@@ -47,7 +47,8 @@ namespace OnlineCinema.Logic.Services
         public async Task<Guid> CreateMovie(ChangeMovieRequest movie)
         {
             var movieEntity = _mapper.Map<MovieEntity>(movie);
-            movieEntity.Id = new Guid();
+            movieEntity.Id =  Guid.NewGuid();
+            movieEntity.CreatedDate = DateTime.Now;
             await _movieRepository.AddAsync(movieEntity);
             return movieEntity.Id;
         }
