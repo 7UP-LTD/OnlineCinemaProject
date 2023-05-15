@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 
 namespace OnlineCinema.Logic.Services.IServices
@@ -13,14 +13,14 @@ namespace OnlineCinema.Logic.Services.IServices
         /// </summary>
         /// <param name="model">DTO для регистрации пользователя.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> RegisterUserAsync(RegisterUserDto model);
+        Task<UserManagerDto> RegisterUserAsync(RegisterUserDto model);
 
         /// <summary>
         /// Аутентификация пользователя.
         /// </summary>
         /// <param name="model">DTO для аутентификации пользователя.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> LoginUserAsync(LoginUserDto model);
+        Task<UserManagerDto> LoginUserAsync(LoginUserDto model);
 
         /// <summary>
         /// Подтверждение электроной почты.
@@ -28,7 +28,7 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="userId">ID пользователя.</param>
         /// <param name="token">Токен доступа.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token);
+        Task<UserManagerDto> ConfirmEmailAsync(string userId, string token);
 
         /// <summary>
         /// Сменить пароль пользователя.
@@ -36,13 +36,13 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="email">Электронная почта для подтверждения смены пароля.</param>
         /// <param name="redirectUrl">URL для перенаправления для сброса пароля.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> ForgetPasswordAsync(string email, string redirectUrl);
+        Task<UserManagerDto> ForgetPasswordAsync(string email, string redirectUrl);
 
         /// <summary>
         /// Сброс пароля пользователя.
         /// </summary>
         /// <param name="model">DTO для сброса пароля.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
-        Task<UserManagerResponse> ResetPasswordAsync(ResetPasswordDto model);
+        Task<UserManagerDto> ResetPasswordAsync(ResetPasswordDto model);
     }
 }
