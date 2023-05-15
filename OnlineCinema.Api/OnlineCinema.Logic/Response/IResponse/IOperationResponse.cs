@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OnlineCinema.Logic.Dtos;
 
 namespace OnlineCinema.Logic.Response.IResponse

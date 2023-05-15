@@ -31,14 +31,14 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
 
         public string? ContentUrl { get; set; }
 
-        public List<MovieGenreDto> Genres { get; set; } = new();
+        public List<Guid> Genres { get; set; } = new();
        
-        public List<MovieTagDto> Tags { get; set; } = new();
+        public List<Guid> Tags { get; set; } = new();
         
-        public List<MovieActorDto> Actors { get; set; } = new();
+        public List<Guid> Actors { get; set; } = new();
         
-        public List<MovieDirectorDto> Directors { get; set; } = new();
+        public List<Guid> Directors { get; set; } = new();
         
-        public List<MovieWriterDto> Writers { get; set; } = new();
+        public List<Guid> Writers { get; set; } = new();
     }
 }

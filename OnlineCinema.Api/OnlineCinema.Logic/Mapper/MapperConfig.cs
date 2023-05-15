@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Logic.Dtos;
