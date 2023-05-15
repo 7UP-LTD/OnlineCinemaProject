@@ -18,13 +18,13 @@ namespace OnlineCinema.Logic.Dtos
         public bool IsSuccess { get; set; }
 
         /// <summary>
-        /// Список ошибок, если есть.
-        /// </summary>
-        public List<string>? Errors { get; set; }
-
-        /// <summary>
         /// Результат операции.
         /// </summary>
         public object? Result { get; set; }
+
+        /// <summary>
+        /// Список ошибок, если есть.
+        /// </summary>
+        public List<string>? Errors { get; set; }
     }
 }
