@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.AuthDtos;
+using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
-using System.Net;
 
 namespace OnlineCinema.WebApi.Controllers
 {
@@ -17,15 +17,20 @@ namespace OnlineCinema.WebApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
+        private readonly IErrorResponse _errorResponse;
 
         /// <summary>
         /// Конструктор контроллера аутентификации.
         /// </summary>
         /// <param name="authService">Сервис аутентификации.</param>
         /// <param name="configuration">Конфигурация.</param>
-        public AuthController(IAuthService authService, IConfiguration configuration)
+        public AuthController(
+            IAuthService authService, 
+            IErrorResponse errorResponse,
+            IConfiguration configuration)
         {
             _authService = authService;
+            _errorResponse = errorResponse;
             _configuration = configuration;
         }
 
@@ -48,6 +53,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(new UserManagerDto
                     {
+                        Message = "Одно или несколько полей не валидны.",
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
                     });
 
@@ -60,12 +66,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования. Ещё бы вспомнить как один раз только делал.
-                var errorModel = new ErrorResponse
-                {
-                    ErrorMessage = "Произошла ошибка на сервере при выполнении операции.",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-
+                var errorModel = _errorResponse.InternalServerError();
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
@@ -102,12 +103,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = new ErrorResponse
-                {
-                    ErrorMessage = "Произошла ошибка на сервере при выполнении операции.",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-
+                var errorModel = _errorResponse.InternalServerError();
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
@@ -123,7 +119,7 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost("Login")]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
         {
             try
@@ -131,6 +127,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(new UserManagerDto
                     {
+                        Message = "Одно или несколько полей не валидны.",
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
                     });
 
@@ -143,12 +140,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = new ErrorResponse
-                {
-                    ErrorMessage = "Произошла ошибка на сервере при выполнении операции.",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-
+                var errorModel = _errorResponse.InternalServerError();
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
@@ -184,12 +176,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = new ErrorResponse
-                {
-                    ErrorMessage = "Произошла ошибка на сервере при выполнении операции.",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-
+                var errorModel = _errorResponse.InternalServerError();
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
@@ -213,7 +200,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(new UserManagerDto
                     {
-                        Message = "Один или несколько полей не валидны.",
+                        Message = "Одно или несколько полей не валидны.",
                         Errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage).ToList())
                     });
 
@@ -226,12 +213,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch(Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = new ErrorResponse
-                {
-                    ErrorMessage = "Произошла ошибка на сервере при выполнении операции.",
-                    StatusCode = HttpStatusCode.InternalServerError,
-                };
-
+                var errorModel = _errorResponse.InternalServerError();
                 return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
             }
         }
