@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
+using OnlineCinema.Logic.Dtos.GenreDtos;
+using OnlineCinema.Logic.Dtos.TagDtos;
 
 namespace OnlineCinema.Logic.Mapper
 {
@@ -19,6 +21,40 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<RegisterUserDto, UserEntity>()
                 .ForMember(src => src.NormalizedEmail, opt => opt.MapFrom(dest => dest.Email.ToUpper()))
                 .ForMember(src => src.NormalizedUserName, opt => opt.MapFrom(dest => dest.UserName.ToUpper()));
+
+            #endregion
+
+            #region DicGenreEntity/GenreDto
+
+            CreateMap<DicGenreEntity, GenreDto>()
+                .ReverseMap();
+
+            #endregion
+
+            #region DicGenreEntity/GenreCreateDto
+
+            CreateMap<GenreCreateDto, DicGenreEntity>()
+                .ForMember(src => src.CreatedDate, opt => opt.MapFrom(dest => DateTime.Now));
+
+            #endregion
+
+            #region DicGenreEntity/GenreUpdateDto
+
+            CreateMap<GenreUpdateDto, DicGenreEntity>().ReverseMap();
+
+            #endregion
+
+            #region DicTagEntity/TagDto
+
+            CreateMap<DicTagEntity, TagDto>()
+                .ReverseMap();
+
+            #endregion
+
+            #region DicTagEntity/TagCreateDto
+
+            CreateMap<TagCreateDto, DicTagEntity>()
+                .ForMember(src => src.CreatedDate, opt => opt.MapFrom(dest => DateTime.Now));
 
             #endregion
         }

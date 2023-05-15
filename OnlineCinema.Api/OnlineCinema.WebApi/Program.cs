@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Response;
+using OnlineCinema.Data.Repositories.IRepositories;
+using OnlineCinema.Data.Repositories;
 
 namespace OnlineCinema.WebApi
 {
@@ -76,8 +78,12 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserManagerResponse, UserManagerResponse>();
+            builder.Services.AddScoped<IOperationResponse, OperationResponse>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
