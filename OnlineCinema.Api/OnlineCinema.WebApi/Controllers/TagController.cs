@@ -4,7 +4,6 @@ using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
-using Org.BouncyCastle.Pkcs;
 using System.Net;
 
 namespace OnlineCinema.WebApi.Controllers
