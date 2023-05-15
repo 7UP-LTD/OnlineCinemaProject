@@ -10,6 +10,5 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public DicActorDto Actor { get; set; }
 
         public Guid MovieId { get; set; }
-        public MovieDto Movie { get; set; }
     }
 }

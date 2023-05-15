@@ -24,12 +24,13 @@ namespace OnlineCinema.Logic.Mapper
                 .ForMember(src => src.NormalizedUserName, opt => opt.MapFrom(dest => dest.UserName.ToUpper()));
 
             #endregion
-            
+
             #region Movie
 
             CreateMap<MovieFilter, MovieEntityFilter>();
             CreateMap<ChangeMovieRequest, MovieEntity>();
-            
+            CreateMap<MovieDto, MovieEntity>().ReverseMap();
+
             #endregion
         }
     }

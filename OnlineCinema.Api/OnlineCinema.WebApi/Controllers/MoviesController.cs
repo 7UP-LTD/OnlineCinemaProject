@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
@@ -6,6 +7,8 @@ using OnlineCinema.Logic.Services.IServices;
 
 namespace OnlineCinema.WebApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class MoviesController : Controller
     {
         private readonly IMovieService _movieService;
@@ -24,9 +27,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="filter">Фильтры: по наименованию, по списку тэгов(guid), по списку жанров(guid)</param>
         /// <returns></returns>
         [HttpPost("list")]
-        public IActionResult GetMovies(int page, int pageSize, MovieFilter filter)
+        public async Task<IActionResult> GetMovies(int page, int pageSize, MovieFilter filter)
         {
-            var moviesList = _movieService.GetMovies(page, pageSize, filter);
+            var moviesList = await _movieService.GetMovies(page, pageSize, filter);
             return Ok(moviesList);
         }
 
@@ -36,9 +39,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="id">Id фильма</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public IActionResult GetMovieById(Guid id)
+        public async Task<IActionResult> GetMovieById(Guid id)
         {
-            var moviesItem = _movieService.GetMovieById(id);
+            var moviesItem = await _movieService.GetMovieById(id);
             return Ok(moviesItem);
         }
 
@@ -48,11 +51,24 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="movie">DTO фильма</param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult CreateMovie([FromBody] ChangeMovieRequest movie)
+        public async Task<IActionResult> CreateMovie([FromBody] ChangeMovieRequest movie)
         {
             //TODO проверка на права по созданию
-            _movieService.CreateMovie(movie);
+            await _movieService.CreateMovie(movie);
             return Ok(movie);
+        }
+
+        /// <summary>
+        /// Редактирование фильма
+        /// </summary>
+        /// <param name="id">Id фильма</param>
+        /// <param name="movie">DTO измененного фильма</param>
+        /// <returns></returns>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateHabit(Guid id, [FromBody] ChangeMovieRequest movie)
+        {
+            await _movieService.UpdateMovie(id, movie);
+            return Ok();
         }
 
         /// <summary>
@@ -61,9 +77,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="id">Id фильма</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public IActionResult DeleteHabit(Guid id)
+        public async Task<IActionResult> DeleteHabit(Guid id)
         {
-            var moviesItem = _movieService.GetMovieById(id);
+            var moviesItem = await _movieService.GetMovieById(id);
             if (moviesItem == null)
             {
                 return NotFound();
@@ -71,7 +87,7 @@ namespace OnlineCinema.WebApi.Controllers
 
             //TODO проверка на права для удаления
 
-            _movieService.DeleteMovie(id);
+            await _movieService.DeleteMovie(id);
             return Ok();
         }
     }

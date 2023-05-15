@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OnlineCinema.Logic.Response
 {
-    internal class ErrorResponse : IErrorResponse
+    public class ErrorResponse : IErrorResponse
     {
         public ErrorResponseDto InternalServerError() =>
             new()
