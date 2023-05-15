@@ -59,42 +59,42 @@ namespace OnlineCinema.Data.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task UpdateHabit(Guid id, MovieEntity movie)
+        public async Task UpdateMovie(Guid id, MovieEntity movie)
         {
-            var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToList();
-            await _context.MovieActors.RemoveRange(movieActors);
-            var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToList();
-            await _context.MovieDirectors.RemoveRange(movieDirectors);
-            var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToList();
-            await _context.MovieWriters.RemoveRange(movieWriters);
-            var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToList();
-            await _context.MovieGenres.RemoveRange(movieGenres);
-
-            var movieEntity = await _context.Movies
-                .Include(x => x.Actors)
-                .Include(x => x.Directors)
-                .Include(x => x.Writers)
-                .Include(x => x.Tags)
-                .FirstOrDefault(x => x.Id == id)!;
-            if (movieEntity == null)
-            {
-                //_logger.LogError("Not found movie by id: {Id}", id);
-                throw new ArgumentException("Not found");
-            }
-
-            await _context.Movies.Update(movieEntity);
-
-            // // Добавление связанных коллекций
-            // _context.Frequencies.AddRange(habit.DayNumbers.Select(x => new FrequencyEntity
-            // {
-            //     Id = Guid.NewGuid(),
-            //     HabitId = id,
-            //     DayNumber = x
-            // }));
-
-
-            _context.SaveChanges();
-        }
+        //     var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToList();
+        //     await _context.MovieActors.RemoveRange(movieActors);
+        //     var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToList();
+        //     await _context.MovieDirectors.RemoveRange(movieDirectors);
+        //     var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToList();
+        //     await _context.MovieWriters.RemoveRange(movieWriters);
+        //     var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToList();
+        //     await _context.MovieGenres.RemoveRange(movieGenres);
+        //
+        //     var movieEntity = await _context.Movies
+        //         .Include(x => x.Actors)
+        //         .Include(x => x.Directors)
+        //         .Include(x => x.Writers)
+        //         .Include(x => x.Tags)
+        //         .FirstOrDefault(x => x.Id == id)!;
+        //     if (movieEntity == null)
+        //     {
+        //         //_logger.LogError("Not found movie by id: {Id}", id);
+        //         throw new ArgumentException("Not found");
+        //     }
+        //
+        //     await _context.Movies.Update(movieEntity);
+        //
+        //     // // Добавление связанных коллекций
+        //     // _context.Frequencies.AddRange(habit.DayNumbers.Select(x => new FrequencyEntity
+        //     // {
+        //     //     Id = Guid.NewGuid(),
+        //     //     HabitId = id,
+        //     //     DayNumber = x
+        //     // }));
+        //
+        //
+        //     _context.SaveChanges();
+         }
 
     }
 

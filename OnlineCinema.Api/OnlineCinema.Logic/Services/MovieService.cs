@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
+using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
@@ -45,13 +46,17 @@ namespace OnlineCinema.Logic.Services
 
         public async Task<Guid> CreateMovie(ChangeMovieRequest movie)
         {
-            var movieEntity = _mapper.Map<MovieEntityFilter>(movie);
-            
+            var movieEntity = _mapper.Map<MovieEntity>(movie);
+            movieEntity.Id = new Guid();
+            await _movieRepository.AddAsync(movieEntity);
+            return movieEntity.Id;
         }
 
         public async Task UpdateMovie(Guid id, ChangeMovieRequest movie)
         {
-            throw new NotImplementedException();
+            var movieEntity = _mapper.Map<MovieEntity>(movie);
+            movieEntity.Id = id;
+            await _movieRepository.UpdateAsync(movieEntity);
         }
 
         public async Task DeleteMovie(Guid id)
@@ -59,7 +64,7 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = await _movieRepository.GetMovieById(id);
             if (movieEntity == null)
             {
-                _logger.LogError("Not found habit by id: {Id}", id);
+                _logger.LogError("Not found movie by id: {Id}", id);
                 throw new ArgumentException("Not found");
             }
 

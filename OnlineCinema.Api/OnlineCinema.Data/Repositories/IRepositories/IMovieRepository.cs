@@ -12,6 +12,6 @@ namespace OnlineCinema.Data.Repositories.IRepositories
 
         Task<List<MovieEntity>> GetPagedMovies(int page, int pageSize, MovieEntityFilter? filter);
 
-        Task UpdateHabit(Guid id, MovieEntity habit);
-      
+        Task UpdateMovie(Guid id, MovieEntity movie);
+    }
 }

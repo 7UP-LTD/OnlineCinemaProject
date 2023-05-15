@@ -3,6 +3,7 @@ using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.AuthDtos;
+using OnlineCinema.Logic.Dtos.MovieDtos;
 
 namespace OnlineCinema.Logic.Mapper
 {
@@ -27,7 +28,8 @@ namespace OnlineCinema.Logic.Mapper
             #region Movie
 
             CreateMap<MovieFilter, MovieEntityFilter>();
-
+            CreateMap<ChangeMovieRequest, MovieEntity>();
+            
             #endregion
         }
     }
