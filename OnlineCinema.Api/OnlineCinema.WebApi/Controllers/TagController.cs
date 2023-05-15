@@ -162,6 +162,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="404">Тег не найден с ответом об операции.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteTagAsync(Guid id)
         {
             try
