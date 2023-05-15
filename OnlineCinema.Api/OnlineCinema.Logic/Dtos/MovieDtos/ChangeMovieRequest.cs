@@ -31,8 +31,6 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
 
         public string? ContentUrl { get; set; }
 
-        public List<MovieSeasonDto> Seasons { get; set; } = new();
-         
         public List<MovieGenreDto> Genres { get; set; } = new();
        
         public List<MovieTagDto> Tags { get; set; } = new();

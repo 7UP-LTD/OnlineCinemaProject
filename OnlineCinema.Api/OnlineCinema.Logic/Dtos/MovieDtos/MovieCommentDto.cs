@@ -1,7 +1,6 @@
 ﻿using System;
-using OnlineCinema.Logic.Dtos.MovieDtos;
 
-namespace OnlineCinema.Logic.Models
+namespace OnlineCinema.Logic.Dtos.MovieDtos
 {
     public class MovieCommentDto
     {

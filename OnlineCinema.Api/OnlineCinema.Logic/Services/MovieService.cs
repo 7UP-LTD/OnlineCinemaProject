@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OnlineCinema.Data;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
@@ -20,10 +17,11 @@ namespace OnlineCinema.Logic.Services
         private readonly ILogger<MovieService> _logger;
         private readonly IMovieRepository _movieRepository;
 
-        public MovieService(IMapper mapper, ILogger<MovieService> logger)
+        public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository)
         {
             _mapper = mapper;
             _logger = logger;
+            _movieRepository = movieRepository;
         }
         
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter = null)
@@ -45,19 +43,27 @@ namespace OnlineCinema.Logic.Services
             return _mapper.Map<MovieDto>(movie);
         }
 
-        public Guid CreateMovie(ChangeMovieRequest movie, Guid userId)
+        public async Task<Guid> CreateMovie(ChangeMovieRequest movie)
+        {
+            var movieEntity = _mapper.Map<MovieEntityFilter>(movie);
+            
+        }
+
+        public async Task UpdateMovie(Guid id, ChangeMovieRequest movie)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateMovie(Guid id, ChangeMovieRequest movie)
+        public async Task DeleteMovie(Guid id)
         {
-            throw new NotImplementedException();
-        }
+            var movieEntity = await _movieRepository.GetMovieById(id);
+            if (movieEntity == null)
+            {
+                _logger.LogError("Not found habit by id: {Id}", id);
+                throw new ArgumentException("Not found");
+            }
 
-        public void DeleteMovie(Guid id)
-        {
-            throw new NotImplementedException();
+            _movieRepository.DeleteAsync(movieEntity);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace OnlineCinema.Data.Repositories
                 .Include(x => x.Writers)
                 .FirstOrDefaultAsync(x => x.Id == movieId);
         }
-        
+
         public async Task<List<MovieEntity>> GetPagedMovies(int page, int pageSize, MovieEntityFilter? filter = null)
         {
             var query = _context.Movies
@@ -44,12 +44,12 @@ namespace OnlineCinema.Data.Repositories
                 {
                     query = query.Where(o => o.Name.Contains(filter.Name));
                 }
-                
+
                 if (filter.Genres != null && filter.Genres.Count > 0)
                 {
                     query = query.Where(o => o.Genres.Any(g => filter.Genres.Contains(g.GenreId)));
                 }
-                
+
                 if (filter.Tags != null && filter.Tags.Count > 0)
                 {
                     query = query.Where(o => o.Tags.Any(t => filter.Tags.Contains(t.TagId)));
@@ -58,5 +58,45 @@ namespace OnlineCinema.Data.Repositories
 
             return await query.ToListAsync();
         }
+
+        public async Task UpdateHabit(Guid id, MovieEntity movie)
+        {
+            var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToList();
+            await _context.MovieActors.RemoveRange(movieActors);
+            var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToList();
+            await _context.MovieDirectors.RemoveRange(movieDirectors);
+            var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToList();
+            await _context.MovieWriters.RemoveRange(movieWriters);
+            var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToList();
+            await _context.MovieGenres.RemoveRange(movieGenres);
+
+            var movieEntity = await _context.Movies
+                .Include(x => x.Actors)
+                .Include(x => x.Directors)
+                .Include(x => x.Writers)
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.Id == id)!;
+            if (movieEntity == null)
+            {
+                //_logger.LogError("Not found movie by id: {Id}", id);
+                throw new ArgumentException("Not found");
+            }
+
+            await _context.Movies.Update(movieEntity);
+
+            // // Добавление связанных коллекций
+            // _context.Frequencies.AddRange(habit.DayNumbers.Select(x => new FrequencyEntity
+            // {
+            //     Id = Guid.NewGuid(),
+            //     HabitId = id,
+            //     DayNumber = x
+            // }));
+
+
+            _context.SaveChanges();
+        }
+
     }
+
+
 }
