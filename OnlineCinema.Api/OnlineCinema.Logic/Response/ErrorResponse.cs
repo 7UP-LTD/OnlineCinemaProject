@@ -9,8 +9,12 @@ using System.Threading.Tasks;
 
 namespace OnlineCinema.Logic.Response
 {
-    internal class ErrorResponse : IErrorResponse
+    /// <summary>
+    /// Класс, представляющий модель ошибки.
+    /// </summary>
+    public class ErrorResponse : IErrorResponse
     {
+        /// <inheritdoc/>
         public ErrorResponseDto InternalServerError() =>
             new()
             {
