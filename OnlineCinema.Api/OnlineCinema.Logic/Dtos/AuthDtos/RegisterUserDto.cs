@@ -32,7 +32,6 @@ namespace OnlineCinema.Logic.Dtos.AuthDtos
         /// <summary>
         /// Фото пользователя. Не обязательное поле.
         /// </summary>
-        [DisplayName("Иконка пользователя")]
         public string? Icon { get; set; }
 
         /// <summary>

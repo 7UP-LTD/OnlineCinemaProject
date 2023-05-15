@@ -13,7 +13,7 @@
         /// <summary>
         /// Успешность операции. По умолчанию false.
         /// </summary>
-        public bool IsSuccess { get; set; } = false;
+        public bool IsSuccess { get; set; }
 
         /// <summary>
         /// Список ошибок.
