@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data;
 using OnlineCinema.WebApi.ApiDescriptors;
@@ -9,17 +7,11 @@ using OnlineCinema.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Builder;
 using OnlineCinema.Logic.Mapper;
 using OnlineCinema.Logic.Services.IServices;
 using OnlineCinema.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using OnlineCinema.Data.Repositories;
-using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Response;
 
@@ -84,6 +76,8 @@ namespace OnlineCinema.WebApi
           
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
             
+            builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
+
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
             builder.Services.AddScoped<IAuthService, AuthService>();
