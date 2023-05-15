@@ -5,7 +5,7 @@ namespace OnlineCinema.Logic.Dtos
     /// <summary>
     /// Ответ в случае ошибки.
     /// </summary>
-    public class ErrorResponse
+    public class ErrorResponseDto
     {
         /// <summary>
         /// Сообщение.

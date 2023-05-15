@@ -3,7 +3,7 @@
     /// <summary>
     /// Ответ менеджера пользователей.
     /// </summary>
-    public class UserManagerResponse
+    public class UserManagerDto
     {
         /// <summary>
         /// Сообщение об операции.
