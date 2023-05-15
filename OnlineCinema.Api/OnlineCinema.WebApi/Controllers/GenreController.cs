@@ -60,7 +60,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// </summary>
         /// <param name="id">Идентификатор жанра.</param>
         /// <returns>Жанр с указанным идентификатором.</returns>
-        /// <response code="200">Успешный ответ с кодом 200 OK с данными о жанре.</response>
+        /// <response code="200">Успешный ответ с кодом 200 OK и с данными о жанре.</response>
         /// <response code="404">Жанр не найден.</response>
         /// <response code="400">Некорректный запрос. С описанием ошибки.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
@@ -96,9 +96,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="model">Модель данных для создания жанра.</param>
         /// <returns>Результат операции создания жанра.</returns>
         /// <response code="200">Успешный ответ с кодом 200 и с ответом о создании.</response>
-        /// <response code="400">Ошибка валидации модели. Возвращается BadRequestResponse с ошибками.</response>
+        /// <response code="404">Ошибка валидации модели. Возвращается BadRequestResponse с ошибками.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
-        [HttpPost("CreateGenre")]
+        [HttpPost]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -132,7 +132,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="404">Жанр не найден с ответом об операции.</response>
         /// <response code="400">Некорректный запрос. С описанием ошибки.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
-        [HttpPut("UpdateGenre")]
+        [HttpPut]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
@@ -169,7 +169,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="204">Успешный ответ с кодом 204 жанр удален.</response>
         /// <response code="404">Жанр не найден с ответом об операции.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
-        [HttpDelete("DeleteGenre/{id}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
