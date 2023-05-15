@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineCinema.Logic.Dtos.AuthDtos
@@ -11,13 +12,14 @@ namespace OnlineCinema.Logic.Dtos.AuthDtos
         /// <summary>
         /// Имя пользователя. Обязательное поле.
         /// </summary>
-        [Required(ErrorMessage = "Имя обязательное поле")]
+        [Required(ErrorMessage = "Имя обязательное поле.")]
+        [DisplayName("Имя")]
         public string Name { get; set; } = null!;
 
         /// <summary>
         /// Фамилия пользователя. Обязательное поле.
         /// </summary>
-        [Required(ErrorMessage = "Фамилия обязательное поле")]
+        [Required(ErrorMessage = "Фамилия обязательное поле.")]
         public string SurName { get; set; } = null!;
 
         /// <summary>
@@ -42,18 +44,21 @@ namespace OnlineCinema.Logic.Dtos.AuthDtos
         /// <summary>
         /// Пароль пользователя. Обязательное поле. Минимальная длина 6 символов.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Пароль обязательное поле.")]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Длина пароля должна быть не меньше 6 и не больше 50 символов.")]
         public string Password { get; set; } = null!;
 
         /// <summary>
         /// Подтверждения пароля. Обязательно поле. Минимальная длина 6 символов.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "Подтверждение пароля обязательное поле.")]
         [StringLength(50, MinimumLength = 6, ErrorMessage = "Длина пароля должна быть не меньше 6 и не больше 50 символов.")]
         public string ConfirmPassword { get; set; } = null!;
 
-        [Required]
+        /// <summary>
+        /// URL для переадресации после успешной регистрации. Обязательное поле
+        /// </summary>
+        [Required(ErrorMessage = "Не указан URL для переадресации после успешной регистрации пользователя.")]
         public string ConfirmRedirectUrl { get; set; } = null!;
     }
 }
