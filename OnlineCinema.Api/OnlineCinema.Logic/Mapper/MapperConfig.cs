@@ -2,6 +2,7 @@
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Dtos.GenreDtos;
+using OnlineCinema.Logic.Dtos.TagDtos;
 
 namespace OnlineCinema.Logic.Mapper
 {
@@ -40,6 +41,20 @@ namespace OnlineCinema.Logic.Mapper
             #region DicGenreEntity/GenreUpdateDto
 
             CreateMap<GenreUpdateDto, DicGenreEntity>().ReverseMap();
+
+            #endregion
+
+            #region DicTagEntity/TagDto
+
+            CreateMap<DicTagEntity, TagDto>()
+                .ReverseMap();
+
+            #endregion
+
+            #region DicTagEntity/TagCreateDto
+
+            CreateMap<TagCreateDto, DicTagEntity>()
+                .ForMember(src => src.CreatedDate, opt => opt.MapFrom(dest => DateTime.Now));
 
             #endregion
         }
