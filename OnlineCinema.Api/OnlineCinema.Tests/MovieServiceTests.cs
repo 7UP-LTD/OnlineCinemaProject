@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
-using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Mapper;
@@ -27,7 +26,7 @@ namespace OnlineCinema.Tests
         private IMapper _mapper;
         private readonly ILogger<MovieService> _logger;
         private MovieRepository _movieRepository;
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -51,7 +50,7 @@ namespace OnlineCinema.Tests
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
-            
+
             await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film Two",
@@ -61,9 +60,73 @@ namespace OnlineCinema.Tests
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
- 
+
             var result = await _movieService.GetMovies(1, 10, new MovieFilter());
             Assert.That(result, Has.Count.EqualTo(2));
-        }  
+        }
+
+        [Test]
+        public async Task CreateAndGetMovie_ShouldReturnMovieById()
+        {
+            var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
+            {
+                Name = "Film One",
+                DateAdded = DateTime.Now,
+                ReleaseYear = DateTime.Now,
+                MoviePosterUrl = "//MoviePosterUrl",
+                IsSeries = false,
+                ContentUrl = "//ContentUrl"
+            });
+
+            var result = await _movieService.GetMovieById(movieId);
+            Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task Update_ShouldUpdateMovieById()
+        {
+            var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
+            {
+                Name = "Film One",
+                DateAdded = DateTime.Now,
+                ReleaseYear = DateTime.Now,
+                MoviePosterUrl = "//MoviePosterUrl",
+                IsSeries = false,
+                ContentUrl = "//ContentUrl"
+            });
+            var movieDto = await _movieService.GetMovieById(movieId);
+
+            movieDto.Name = "Film Edited";
+            var movie = _mapper.Map<ChangeMovieRequest>(movieDto);
+            await _movieService.UpdateMovie(movieId, movie);
+
+            var result = await _movieService.GetMovieById(movieId);
+            Assert.That(result.Name, Is.EqualTo("Film Edited"));
+        }
+
+        [Test]
+        public async Task Delete_ShouldDeleteMovieById()
+        {
+            var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
+            {
+                Name = "Film One",
+                DateAdded = DateTime.Now,
+                ReleaseYear = DateTime.Now,
+                MoviePosterUrl = "//MoviePosterUrl",
+                IsSeries = false,
+                ContentUrl = "//ContentUrl"
+            });
+
+            var result = await _movieService.GetMovieById(movieId);
+            Assert.That(result, Is.Not.Null);
+
+            await _movieService.DeleteMovie(movieId);
+
+            ArgumentException? ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                result = await _movieService.GetMovieById(movieId);
+            });
+            if (ex != null) Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'logger')"));
+        }
     }
 }

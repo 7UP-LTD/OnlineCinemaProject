@@ -30,7 +30,7 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<MovieFilter, MovieEntityFilter>();
             CreateMap<ChangeMovieRequest, MovieEntity>();
             CreateMap<MovieDto, MovieEntity>().ReverseMap();
-
+            CreateMap<MovieDto,ChangeMovieRequest>();
             #endregion
         }
     }

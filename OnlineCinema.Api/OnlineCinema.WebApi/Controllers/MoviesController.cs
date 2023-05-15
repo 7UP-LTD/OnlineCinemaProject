@@ -13,7 +13,6 @@ namespace OnlineCinema.WebApi.Controllers
     {
         private readonly IMovieService _movieService;
 
-
         public MoviesController(IMovieService movieService)
         {
             _movieService = movieService;
@@ -36,7 +35,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <summary>
         /// Получение фильма по id
         /// </summary>
-        /// <param name="id">Id фильма</param>
+        /// <param name="id">Идентификатор фильма</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetMovieById(Guid id)
@@ -61,7 +60,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <summary>
         /// Редактирование фильма
         /// </summary>
-        /// <param name="id">Id фильма</param>
+        /// <param name="id">Идентификатор фильма</param>
         /// <param name="movie">DTO измененного фильма</param>
         /// <returns></returns>
         [HttpPut("{id}")]
@@ -72,9 +71,9 @@ namespace OnlineCinema.WebApi.Controllers
         }
 
         /// <summary>
-        /// Удаление фильма по id
+        /// Удаление фильма по идентификатору
         /// </summary>
-        /// <param name="id">Id фильма</param>
+        /// <param name="id">Идентификатор фильма</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHabit(Guid id)

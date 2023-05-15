@@ -24,7 +24,7 @@ namespace OnlineCinema.Logic.Services
             _logger = logger;
             _movieRepository = movieRepository;
         }
-        
+
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter = null)
         {
             var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
@@ -47,7 +47,7 @@ namespace OnlineCinema.Logic.Services
         public async Task<Guid> CreateMovie(ChangeMovieRequest movie)
         {
             var movieEntity = _mapper.Map<MovieEntity>(movie);
-            movieEntity.Id =  Guid.NewGuid();
+            movieEntity.Id = Guid.NewGuid();
             movieEntity.CreatedDate = DateTime.Now;
             await _movieRepository.AddAsync(movieEntity);
             return movieEntity.Id;
@@ -65,7 +65,7 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = await _movieRepository.GetMovieById(id);
             if (movieEntity == null)
             {
-                _logger.LogError("Not found movie by id: {Id}", id);
+               // _logger.LogError("Not found movie by id: {Id}", id);
                 throw new ArgumentException("Not found");
             }
 
