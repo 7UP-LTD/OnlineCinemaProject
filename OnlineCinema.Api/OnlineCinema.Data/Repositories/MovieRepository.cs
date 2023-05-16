@@ -61,42 +61,61 @@ namespace OnlineCinema.Data.Repositories
 
         public async Task UpdateMovie(Guid id, MovieEntity movie)
         {
-        //     var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToList();
-        //     await _context.MovieActors.RemoveRange(movieActors);
-        //     var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToList();
-        //     await _context.MovieDirectors.RemoveRange(movieDirectors);
-        //     var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToList();
-        //     await _context.MovieWriters.RemoveRange(movieWriters);
-        //     var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToList();
-        //     await _context.MovieGenres.RemoveRange(movieGenres);
-        //
-        //     var movieEntity = await _context.Movies
-        //         .Include(x => x.Actors)
-        //         .Include(x => x.Directors)
-        //         .Include(x => x.Writers)
-        //         .Include(x => x.Tags)
-        //         .FirstOrDefault(x => x.Id == id)!;
-        //     if (movieEntity == null)
-        //     {
-        //         //_logger.LogError("Not found movie by id: {Id}", id);
-        //         throw new ArgumentException("Not found");
-        //     }
-        //
-        //     await _context.Movies.Update(movieEntity);
-        //
-        //     // // Добавление связанных коллекций
-        //     // _context.Frequencies.AddRange(habit.DayNumbers.Select(x => new FrequencyEntity
-        //     // {
-        //     //     Id = Guid.NewGuid(),
-        //     //     HabitId = id,
-        //     //     DayNumber = x
-        //     // }));
-        //
-        //
-        //     _context.SaveChanges();
-         }
+            var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToListAsync();
+            _context.MovieActors.RemoveRange(movieActors);
+            var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToListAsync();
+            _context.MovieDirectors.RemoveRange(movieDirectors);
+            var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToListAsync();
+            _context.MovieWriters.RemoveRange(movieWriters);
+            var movieTags = await _context.MovieTags.Where(x => x.MovieId == id).ToListAsync();
+            _context.MovieTags.RemoveRange(movieTags);
+            var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToListAsync();
+            _context.MovieGenres.RemoveRange(movieGenres);
 
+            var movieEntity = _context.Movies
+                .Include(x => x.Actors)
+                .Include(x => x.Directors)
+                .Include(x => x.Writers)
+                .Include(x => x.Tags)
+                .Include(x => x.Genres)
+                .FirstOrDefault(x => x.Id == id)!;
+            if (movieEntity == null)
+            {
+                throw new ArgumentException("Not found");
+            }
+
+            _context.Movies.Update(movie);
+
+            // Добавление связанных коллекций
+            _context.MovieActors.AddRange(movie.Actors.Select(x => new MovieActorEntity()
+            {
+                Id = Guid.NewGuid(),
+                MovieId = id,
+                ActorId = x.ActorId
+            }));
+
+            _context.MovieDirectors.AddRange(movie.Directors.Select(x => new MovieDirectorEntity()
+            {
+                Id = Guid.NewGuid(),
+                MovieId = id,
+                DirectorId = x.DirectorId
+            }));
+            
+            _context.MovieWriters.AddRange(movie.Writers.Select(x => new MovieWriterEntity()
+            {
+                Id = Guid.NewGuid(),
+                MovieId = id,
+                WriterId = x.WriterId
+            }));
+            
+            _context.MovieTags.AddRange(movie.Tags.Select(x => new MovieTagEntity()
+            {
+                Id = Guid.NewGuid(),
+                MovieId = id,
+                TagId = x.TagId
+            }));
+            
+            await _context.SaveChangesAsync();
+        }
     }
-
-
 }
