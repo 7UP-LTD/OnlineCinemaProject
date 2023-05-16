@@ -35,7 +35,7 @@ namespace OnlineCinema.Logic.Response.IResponse
         /// Формирует успешный ответ операции с кодом 201 Created.
         /// </summary>
         /// <returns>Объект успешного ответа с кодом 201 Created.</returns>
-        ResponseDto CreatedSuccessfully();
+        ResponseDto CreatedSuccessfully(object? result = null);
 
         /// <summary>
         /// Формирует успешный ответ операции с кодом 200 OK обновления данных.
