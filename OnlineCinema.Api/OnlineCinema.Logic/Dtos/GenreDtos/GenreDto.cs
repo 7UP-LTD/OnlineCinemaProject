@@ -1,4 +1,6 @@
-﻿namespace OnlineCinema.Logic.Dtos.GenreDtos
+﻿using System;
+
+namespace OnlineCinema.Logic.Dtos.GenreDtos
 {
     /// <summary>
     /// DTO модель для представления жанра.

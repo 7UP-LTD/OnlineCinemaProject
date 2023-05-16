@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data;
 using OnlineCinema.WebApi.ApiDescriptors;
@@ -7,11 +9,17 @@ using OnlineCinema.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Builder;
 using OnlineCinema.Logic.Mapper;
 using OnlineCinema.Logic.Services.IServices;
 using OnlineCinema.Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using OnlineCinema.Data.Repositories;
+using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Response;
 using OnlineCinema.Data.Repositories.IRepositories;
@@ -66,7 +74,7 @@ namespace OnlineCinema.WebApi
                 };
             });
 
-            // Оказывается вот так отключается валидация автоматическая
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -74,6 +82,10 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
+            builder.Services.AddTransient<IMovieService, MovieService>();
+          
+            builder.Services.AddTransient<IMovieRepository, MovieRepository>();
+            
             builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
