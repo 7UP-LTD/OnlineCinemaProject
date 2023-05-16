@@ -1,5 +1,3 @@
-﻿
-using System;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
