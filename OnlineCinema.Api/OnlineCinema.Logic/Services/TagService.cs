@@ -62,7 +62,8 @@ namespace OnlineCinema.Logic.Services
 
             var tag = _mapper.Map<DicTagEntity>(model);
             await _tagRepository.AddAsync(tag);
-            return _response.CreatedSuccessfully();
+            var createdTag = await _tagRepository.GetOrDefaultAsync(t => t.Name == model.Name);
+            return _response.CreatedSuccessfully(createdTag.Id);
         }
 
         /// <inheritdoc/>
