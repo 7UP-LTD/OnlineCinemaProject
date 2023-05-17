@@ -92,13 +92,15 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
-
+            builder.Services.AddScoped<ITagRepository, TagRepository>();
+            
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddScoped<IOperationResponse, OperationResponse>();
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<ITagService, TagService>();
-
+            builder.Services.AddScoped<ITagService, TagService>();
+            
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

@@ -55,9 +55,9 @@ namespace OnlineCinema.Logic.Services
 
         public async Task UpdateMovie(Guid id, ChangeMovieRequest movie)
         {
-            var movieEntity = _mapper.Map<MovieEntity>(movie);
-            movieEntity.Id = id;
-            await _movieRepository.UpdateAsync(movieEntity);
+            var movieEntity = await _movieRepository.GetMovieById(id);
+            _mapper.Map(movie, movieEntity);
+            await _movieRepository.UpdateMovie(id, movieEntity);
         }
 
         public async Task DeleteMovie(Guid id)

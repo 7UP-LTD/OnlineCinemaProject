@@ -34,6 +34,9 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<ChangeMovieRequest, MovieEntity>();
             CreateMap<MovieDto, MovieEntity>().ReverseMap();
             CreateMap<MovieDto,ChangeMovieRequest>();
+            CreateMap<MovieSeasonDto,ChangeSeasonRequest>();
+            CreateMap<MovieSeasonDto,MovieSeasonEntity>().ReverseMap();
+            
             #endregion
 
             #region DicGenreEntity/GenreDto
