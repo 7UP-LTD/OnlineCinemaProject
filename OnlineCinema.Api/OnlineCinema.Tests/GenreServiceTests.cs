@@ -4,14 +4,11 @@ using NUnit.Framework;
 using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
 using OnlineCinema.Logic.Response.IResponse;
-using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Mapper;
 using OnlineCinema.Logic.Services;
 using OnlineCinema.Logic.Services.IServices;
-using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos.GenreDtos;
-using OnlineCinema.Logic.Dtos.MovieDtos;
-using OnlineCinema.Data.Entities;
+using System.Net;
 
 namespace OnlineCinema.Tests
 {
@@ -40,6 +37,27 @@ namespace OnlineCinema.Tests
         }
 
         [Test]
+        [TestCase("Comedy", "A genre of film that makes people laugh.")]
+        [TestCase("Horror", "A genre of film that scares people.")]
+        public async Task CreateGenreAsync_ShouldReturnSuccessfulResponse(string name, string description)
+        {
+            // Arrange
+            var genreCreateDto = new GenreCreateDto
+            {
+                Name = name,
+                Description = description
+            };
+
+            // Act
+            var response = await _genreService.CreateGenreAsync(genreCreateDto);
+
+            // Assert
+            Assert.IsTrue(response.IsSuccess); // Check that the response is successful
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode); // Check that the status code is 201 (Created)
+            Assert.IsInstanceOf<Guid>(response.Result); // Check that the result is a Guid
+        }
+
+        [Test]
         public async Task GetAllGenreAsync_ShouldReturnAllGenres()
         {
             await _genreService.CreateGenreAsync(new GenreCreateDto
@@ -56,36 +74,45 @@ namespace OnlineCinema.Tests
             Assert.That(result, Has.Count.EqualTo(2));
         }
 
-        //[Test]
-        //public async Task CreateAndGetGenreAsync_ShouldReturnGenreById()
-        //{
-        //    var createResponse = await _genreService.CreateGenreAsync(new GenreCreateDto
-        //    {
-        //        Name = "Comedy"
-        //    });
+        [Test]
+        public async Task CreateAndGetGenreAsync_ShouldReturnGenreById()
+        {
+            var createResponse = await _genreService.CreateGenreAsync(new GenreCreateDto
+            {
+                Name = "Comedy",
+                Description = "A genre of film that makes people laugh."
+            });
 
-        //    var genreId = (Guid)createResponse.Result;
+            Assert.That(createResponse.IsSuccess, Is.True);
 
-        //    var result = await _genreService.GetGenreByIdAsync(genreId);
-        //    Assert.That(result, Is.Not.Null);
-        //}
+            var result = await _genreService.GetGenreByIdAsync((Guid)createResponse.Result);
+            Assert.That(result, Is.Not.Null);
+        }
 
-        //[Test]
-        //public async Task Update_ShouldUpdateGenreById()
-        //{
-        //    var genreId = await _genreService.CreateGenreAsync(new GenreCreateDto
-        //    {
-        //        Name = "Comedy"
-        //    });
-        //    var genreDto = await _genreService.GetGenreByIdAsync(genreId);
+        [Test]
+        public async Task UpdateGenreAsync_ShouldUpdateGenreName_WhenGenreExistsAndNameIsValid()
+        {
+            // Arrange
+            var createResponse = await _genreService.CreateGenreAsync(new GenreCreateDto
+            {
+                Name = "Comedy",
+                Description = "A genre of film that makes people laugh."
+            });
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.StatusCode); // Check status code
+            Assert.IsTrue(createResponse.IsSuccess); // Check success flag
+            var responseDto = await _genreService.GetGenreByIdAsync((Guid)createResponse.Result);
+            responseDto.Result = "Comedy Edited";
+            var genreUpdateDto = _mapper.Map<GenreUpdateDto>(responseDto);
 
-        //    genreDto.Name = "Comedy Edited";
-        //    var genre = _mapper.Map<GenreUpdateDto>(genreDto);
-        //    await _genreService.UpdateGenreAsync(genre);
+            // Act
+            var updateResponse = await _genreService.UpdateGenreAsync(genreUpdateDto); // Assign update response to a variable
+            Assert.AreEqual(HttpStatusCode.OK, updateResponse.StatusCode); // Check status code
+            Assert.IsTrue(updateResponse.IsSuccess); // Check success flag
+            var updatedGenreDto = await _genreService.GetGenreByIdAsync((Guid)createResponse.Result);
 
-        //    var result = await _genreService.GetGenreByIdAsync(genreId);
-        //    Assert.That(result.Name, Is.EqualTo("Genre Edited"));
-        //}
+            // Assert
+            Assert.AreEqual("Comedy Edited", updatedGenreDto.Result);
+        }
 
         //[Test]
         //public async Task Delete_ShouldDeleteGenreById()
