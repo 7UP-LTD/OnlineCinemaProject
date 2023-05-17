@@ -44,7 +44,7 @@ namespace OnlineCinema.WebApi.Controllers
             try
             {
                 var result = await _tagService.GetAllTagsAsync();
-                return Ok(result);
+                return Ok(result.result);
             }
             catch
             {
@@ -71,9 +71,9 @@ namespace OnlineCinema.WebApi.Controllers
             {
                 var result = await _tagService.GetTagByIdAsync(id);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
-                return NotFound(result);
+                return NotFound(result.result);
             }
             catch
             {
@@ -103,9 +103,9 @@ namespace OnlineCinema.WebApi.Controllers
 
                 var result = await _tagService.CreateTagAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
-                return BadRequest(result);
+                return BadRequest(result.result);
             }
             catch
             {
@@ -137,12 +137,12 @@ namespace OnlineCinema.WebApi.Controllers
 
                 var result = await _tagService.UpdateTagAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
                 if (result.StatusCode == HttpStatusCode.NotFound) 
-                    return NotFound(result);
+                    return NotFound(result.result);
 
-                return BadRequest(result);
+                return BadRequest(result.result);
             }
             catch
             {
@@ -169,9 +169,9 @@ namespace OnlineCinema.WebApi.Controllers
             {
                 var result = await _tagService.DeleteTagAsync(id);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
-                return NotFound(result);
+                return NotFound(result.result);
             }
             catch
             {
