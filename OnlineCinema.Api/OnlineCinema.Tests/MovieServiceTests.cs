@@ -8,7 +8,9 @@ using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
+using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Mapper;
+using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services;
 using OnlineCinema.Logic.Services.IServices;
 
@@ -26,7 +28,10 @@ namespace OnlineCinema.Tests
         private IMapper _mapper;
         private readonly ILogger<MovieService> _logger;
         private MovieRepository _movieRepository;
-
+        private TagRepository _tagRepository;
+        private TagService _tagService;
+        private readonly IOperationResponse _response;
+        
         [SetUp]
         public void SetUp()
         {
@@ -35,7 +40,9 @@ namespace OnlineCinema.Tests
             _appDbContext = new ApplicationDbContext(options);
             _appDbContext.Database.EnsureDeleted();
             _movieRepository = new MovieRepository(_appDbContext);
+            _tagRepository = new TagRepository(_appDbContext);
             _movieService = new MovieService(_mapper, _logger, _movieRepository);
+            _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 
         [Test]
@@ -128,5 +135,30 @@ namespace OnlineCinema.Tests
             });
             if (ex != null) Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'logger')"));
         }
+        
+        [Test]
+        public async Task UpdateWithTag_ShouldUpdateMovieById()
+        {
+            var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
+            {
+                Name = "Film One",
+                DateAdded = DateTime.Now,
+                ReleaseYear = DateTime.Now,
+                MoviePosterUrl = "//MoviePosterUrl",
+                IsSeries = false,
+                ContentUrl = "//ContentUrl"
+            });
+
+            
+            var movieDto = await _movieService.GetMovieById(movieId);
+
+            movieDto.Name = "Film Edited";
+            var movie = _mapper.Map<ChangeMovieRequest>(movieDto);
+            await _movieService.UpdateMovie(movieId, movie);
+
+            var result = await _movieService.GetMovieById(movieId);
+            Assert.That(result.Name, Is.EqualTo("Film Edited"));
+        }
+
     }
 }

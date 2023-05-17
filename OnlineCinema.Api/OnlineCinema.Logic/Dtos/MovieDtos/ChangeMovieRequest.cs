@@ -29,8 +29,13 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         /// </summary>
         public bool IsSeries { get; set; }
 
+        public Guid CountryId { get; set; }
         public string? ContentUrl { get; set; }
+        
+        public int AgeLimit { get; set; }
 
+        public int Duration { get; set; }
+        
         public List<Guid> Genres { get; set; } = new();
        
         public List<Guid> Tags { get; set; } = new();

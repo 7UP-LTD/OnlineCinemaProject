@@ -18,14 +18,34 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="page">Номер страницы</param>
         /// <param name="pageSize">Количество на странице</param>
         /// <param name="filter">Фильтры: по наименование, по списку тэгов(guid), по списку жанров(guid)</param>
-        /// <returns></returns>
+        /// <returns>Список фильмов</returns>
         Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter);
-        Task<MovieDto> GetMovieById(Guid id);
-        Task<Guid> CreateMovie(ChangeMovieRequest movie);
-        Task UpdateMovie(Guid id, ChangeMovieRequest movie);
-        Task DeleteMovie(Guid id);
-    
-        
 
+        /// <summary>
+        /// Получение фильма по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор фильма</param>
+        /// <returns>Фильм DTO</returns>
+        Task<MovieDto> GetMovieById(Guid id);
+
+        /// <summary>
+        /// Создание фильма
+        /// </summary>
+        /// <param name="movie">Данные фильма</param>
+        /// <returns>Идентификатор созданного фильма</returns>
+        Task<Guid> CreateMovie(ChangeMovieRequest movie);
+
+        /// <summary>
+        /// Обновление фильма
+        /// </summary>
+        /// <param name="id">Идентификатор фильма</param>
+        /// <param name="movie">Данные фильма</param>
+        Task UpdateMovie(Guid id, ChangeMovieRequest movie);
+
+        /// <summary>
+        /// Удаление фильма
+        /// </summary>
+        /// <param name="id">Идентификатор фильма</param>
+        Task DeleteMovie(Guid id);
     }
 }
