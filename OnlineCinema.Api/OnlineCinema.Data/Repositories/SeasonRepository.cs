@@ -48,14 +48,14 @@ namespace OnlineCinema.Data.Repositories
                 throw new ArgumentException("Not found");
             }
 
-            // _context.Movies.Update(season);
-            //
-            // // Добавление связанных коллекций
-            // _context.MovieEpisodes.AddRange(season.Episodes.Select(x => new MovieTagEntity()
-            // {
-            //     Id = Guid.NewGuid(),
-            //     SeasonId = id
-            // }));
+            _context.MovieSeasons.Update(season);
+            
+            // Добавление связанных коллекций
+            _context.MovieEpisodes.AddRange(season.Episodes.Select(x => new MovieEpisodeEntity()
+            {
+                Id = Guid.NewGuid(),
+                SeasonId = id,
+            }));
 
             await _context.SaveChangesAsync();
         }

@@ -83,8 +83,10 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
             builder.Services.AddTransient<IMovieService, MovieService>();
-          
+            builder.Services.AddTransient<ISeasonService, SeasonService>();
+            
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
+            builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
             
             builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
 
@@ -92,14 +94,14 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
-            builder.Services.AddScoped<ITagRepository, TagRepository>();
+            
             
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddScoped<IOperationResponse, OperationResponse>();
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<ITagService, TagService>();
-            builder.Services.AddScoped<ITagService, TagService>();
+          
             
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

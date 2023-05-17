@@ -64,7 +64,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="movie">DTO измененного фильма</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateHabit(Guid id, [FromBody] ChangeMovieRequest movie)
+        public async Task<IActionResult> UpdateMovie(Guid id, [FromBody] ChangeMovieRequest movie)
         {
             await _movieService.UpdateMovie(id, movie);
             return Ok();
@@ -76,7 +76,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="id">Идентификатор фильма</param>
         /// <returns></returns>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHabit(Guid id)
+        public async Task<IActionResult> DeleteMovie(Guid id)
         {
             var moviesItem = await _movieService.GetMovieById(id);
             if (moviesItem == null)
