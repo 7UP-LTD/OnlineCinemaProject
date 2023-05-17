@@ -42,11 +42,11 @@ namespace OnlineCinema.Logic.Response
             };
 
         /// <inheritdoc/>
-        public ResponseDto CreatedSuccessfully() =>
+        public ResponseDto CreatedSuccessfully(object? result = null) =>
             new()
             {
                 StatusCode = HttpStatusCode.Created,
-                Result = "Информация успешно добавлена.",
+                Result = result is null ? "Информация успешно добавлена." : result,
                 IsSuccess = true,
             };
 
