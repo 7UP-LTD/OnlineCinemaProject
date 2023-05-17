@@ -66,9 +66,16 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(Guid id, [FromBody] ChangeMovieRequest movie)
         {
-            await _movieService.UpdateMovie(id, movie);
-            return Ok();
-        }
+            try
+            {
+                await _movieService.UpdateMovie(id, movie);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest();
+            }
+         }
 
         /// <summary>
         /// Удаление фильма по идентификатору

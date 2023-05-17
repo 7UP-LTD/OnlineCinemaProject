@@ -9,6 +9,6 @@ namespace OnlineCinema.Data.Repositories.IRepositories
         Task<MovieSeasonEntity?> GetSeasonsByMovieId(Guid movieId);
 
         Task<MovieSeasonEntity> GetSeasonById(Guid seasonId);
-        Task UpdateSeason(Guid id, MovieSeasonEntity seasonEntity);
+        Task UpdateSeason(Guid id, MovieSeasonEntity season);
     }
 }
