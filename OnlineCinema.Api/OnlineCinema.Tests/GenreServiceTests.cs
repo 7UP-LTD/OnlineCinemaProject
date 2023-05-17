@@ -114,24 +114,28 @@ namespace OnlineCinema.Tests
             Assert.AreEqual("Comedy Edited", updatedGenreDto.Result);
         }
 
-        //[Test]
-        //public async Task Delete_ShouldDeleteGenreById()
-        //{
-        //    var genreId = await _genreService.CreateGenreAsync(new GenreCreateDto
-        //    {
-        //        Name = "Comedy"
-        //    });
+        [Test]
+        public async Task DeleteGenreAsync_ShouldReturnDeleteSuccessfully_WhenGenreExists()
+        {
+            // Arrange
+            var createResponse = await _genreService.CreateGenreAsync(new GenreCreateDto
+            {
+                Name = "Comedy",
+                Description = "A genre of film that makes people laugh."
+            });
+            Assert.AreEqual(HttpStatusCode.OK, createResponse.StatusCode); // Check status code
+            Assert.IsTrue(createResponse.IsSuccess); // Check success flag
 
-        //    var result = await _genreService.GetGenreByIdAsync(genreId);
-        //    Assert.That(result, Is.Not.Null);
+            // Act
+            var deleteResponse = await _genreService.DeleteGenreAsync((Guid)createResponse.Result); // Assign delete response to a variable
+            Assert.AreEqual(HttpStatusCode.OK, deleteResponse.StatusCode); // Check status code
+            Assert.IsTrue(deleteResponse.IsSuccess); // Check success flag
 
-        //    await _genreService.DeleteGenreAsync(genreId);
-
-        //    ArgumentException? ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
-        //    {
-        //        result = await _genreService.GetGenreByIdAsync(genreId);
-        //    });
-        //    if (ex != null) Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'response')"));
-        //}
+            // Assert
+            var getResponse = await _genreService.GetGenreByIdAsync((Guid)createResponse.Result); // Assign get response to a variable
+            Assert.AreEqual(HttpStatusCode.NotFound, getResponse.StatusCode); // Check status code
+            Assert.IsFalse(getResponse.IsSuccess); // Check success flag
+            Assert.IsNull(getResponse.Result); // Check result is null
+        }
     }
 }
