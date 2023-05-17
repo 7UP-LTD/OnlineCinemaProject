@@ -45,7 +45,7 @@ namespace OnlineCinema.Logic.Services
         {
             var genre = await _genreRepository.GetOrDefaultAsync(g => g.Id == genreId);
             if (genre is null)
-                return _response.NotFound(new List<string> { $"Жанр с таким ID {genreId} не найден." }); ;
+                return _response.NotFound(new List<string> { $"Жанр с таким ID {genreId} не найден." });
 
             var genreDto = _mapper.Map<GenreDto>(genre);
             return _response.SuccessResponse(genreDto);
@@ -56,11 +56,12 @@ namespace OnlineCinema.Logic.Services
         {
             var genreExist = await _genreRepository.GetOrDefaultAsync(g => g.Name.ToUpper() == model.Name.ToUpper());
             if (genreExist is not null)
-                return _response.BadRequest(new List<string> { $"Жанр с таким названием уже существует {model.Name}." });
+                return _response.BadRequest(new List<string> { $"Жанр с таким названием уже существует {model.Name}." }, model);
 
             var genre = _mapper.Map<DicGenreEntity>(model);
             await _genreRepository.AddAsync(genre);
-            return _response.CreatedSuccessfully();
+            var createdGenre = await _genreRepository.GetOrDefaultAsync(g => g.Name == model.Name);
+            return _response.CreatedSuccessfully(createdGenre!.Id);
         }
 
         /// <inheritdoc/>
