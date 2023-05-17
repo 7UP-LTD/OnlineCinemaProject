@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OnlineCinema.Data.Entities;
 
@@ -42,7 +43,8 @@ namespace OnlineCinema.Data
         public DbSet<DicGenreEntity> DicGenres { get; set; }
         public DbSet<DicTagEntity> DicTags { get; set; }
         public DbSet<DicWriterEntity> DicWriters { get; set; }
-
+        public DbSet<DicCountryEntity> DicCountries { get; set; }
+        
         public DbSet<PersonEntity> Persons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -89,6 +91,8 @@ namespace OnlineCinema.Data
             builder.Entity<DicTagEntity>()
                 .HasKey(x => x.Id);
             builder.Entity<DicWriterEntity>()
+                .HasKey(x => x.Id);
+            builder.Entity<DicCountryEntity>()
                 .HasKey(x => x.Id);
             builder.Entity<PersonEntity>()
                 .HasKey(x => x.Id);

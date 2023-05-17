@@ -144,6 +144,24 @@ namespace OnlineCinema.Data.Migrations
                     b.ToTable("DicActors");
                 });
 
+            modelBuilder.Entity("OnlineCinema.Data.Entities.DicCountryEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DicCountries");
+                });
+
             modelBuilder.Entity("OnlineCinema.Data.Entities.DicDirectorEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -331,8 +349,14 @@ namespace OnlineCinema.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AgeLimit")
+                        .HasColumnType("int");
+
                     b.Property<string>("ContentUrl")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -342,6 +366,9 @@ namespace OnlineCinema.Data.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsSeries")
                         .HasColumnType("bit");
@@ -354,10 +381,12 @@ namespace OnlineCinema.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ReleaseYear")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
 
                     b.ToTable("Movies");
                 });
@@ -919,6 +948,17 @@ namespace OnlineCinema.Data.Migrations
                     b.Navigation("Director");
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("OnlineCinema.Data.Entities.MovieEntity", b =>
+                {
+                    b.HasOne("OnlineCinema.Data.Entities.DicCountryEntity", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("OnlineCinema.Data.Entities.MovieEpisodeEntity", b =>

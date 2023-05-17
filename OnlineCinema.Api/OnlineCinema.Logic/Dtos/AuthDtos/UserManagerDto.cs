@@ -1,4 +1,6 @@
-﻿namespace OnlineCinema.Logic.Dtos.AuthDtos
+﻿using System.Collections.Generic;
+
+namespace OnlineCinema.Logic.Dtos.AuthDtos
 {
     /// <summary>
     /// Ответ менеджера пользователей.

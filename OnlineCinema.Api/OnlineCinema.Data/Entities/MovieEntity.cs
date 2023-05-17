@@ -17,7 +17,7 @@ namespace OnlineCinema.Data.Entities
         /// <summary>
         /// год выпуска фильма
         /// </summary>
-        public DateTime ReleaseYear { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
         /// <summary>
         /// ссылка на картинку-заставку
@@ -30,7 +30,14 @@ namespace OnlineCinema.Data.Entities
         public bool IsSeries { get; set; }
 
         public string? ContentUrl { get; set; }
+        
+        public Guid CountryId { get; set; }
+        
+        public DicCountryEntity Country { get; set; }
+        
+        public int AgeLimit { get; set; }
 
+        public int Duration { get; set; }
         public List<MovieSeasonEntity> Seasons { get; set; } = new();
         
         public List<MovieCommentEntity> Comments { get; set; } = new();

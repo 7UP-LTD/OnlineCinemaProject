@@ -1,4 +1,5 @@
-﻿using OnlineCinema.Logic.Dtos.AuthDtos;
+﻿using System.Collections.Generic;
+using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Response.IResponse;
 
 namespace OnlineCinema.Logic.Response
