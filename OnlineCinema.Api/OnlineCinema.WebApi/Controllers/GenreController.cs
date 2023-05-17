@@ -45,7 +45,7 @@ namespace OnlineCinema.WebApi.Controllers
             try
             {
                 var result = await _genreService.GetAllGenresAsync();
-                return Ok(result);
+                return Ok(result.result);
             }
             catch (Exception ex)
             {
@@ -75,12 +75,12 @@ namespace OnlineCinema.WebApi.Controllers
             {
                 var result = await _genreService.GetGenreByIdAsync(id);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
                 if (result.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(result);
+                    return NotFound(result.result);
 
-                return BadRequest(result);
+                return BadRequest(result.result);
             }
             catch (Exception ex)
             {
@@ -111,9 +111,9 @@ namespace OnlineCinema.WebApi.Controllers
 
                 var result = await _genreService.CreateGenreAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
-                return BadRequest(result);
+                return BadRequest(result.result);
             }
             catch (Exception ex)
             {
@@ -146,12 +146,12 @@ namespace OnlineCinema.WebApi.Controllers
 
                 var result = await _genreService.UpdateGenreAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.result);
 
                 if (result.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(result);
+                    return NotFound(result.result);
 
-                return BadRequest(result);
+                return BadRequest(result.result);
             }
             catch (Exception ex)
             {
@@ -181,7 +181,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (result.IsSuccess)
                     return NoContent();
 
-                return NotFound(result);
+                return NotFound(result.result);
             }
             catch (Exception ex)
             {
