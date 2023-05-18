@@ -15,12 +15,14 @@ namespace OnlineCinema.Logic.Services
         private readonly IMapper _mapper;
         private readonly ILogger<EpisodeService> _logger;
         private readonly IEpisodeRepository _episodeRepository;
+        private readonly ISeasonRepository _seasonRepository;
 
-        public EpisodeService(IMapper mapper, ILogger<EpisodeService> logger, IEpisodeRepository episodeRepository)
+        public EpisodeService(IMapper mapper, ILogger<EpisodeService> logger, IEpisodeRepository episodeRepository, ISeasonRepository seasonRepository)
         {
             _mapper = mapper;
             _logger = logger;
             _episodeRepository = episodeRepository;
+            _seasonRepository = seasonRepository;
         }
 
         public async Task<List<MovieEpisodeDto>> GetEpisodes(Guid seasonId)
@@ -43,6 +45,13 @@ namespace OnlineCinema.Logic.Services
 
         public async Task<Guid> CreateEpisode(ChangeEpisodeRequest episode)
         {
+            var season = await _seasonRepository.GetSeasonById(episode.SeasonId);
+            if (season == null)
+            {
+                _logger.LogError("Not found movie by id: {Id}", episode.SeasonId);
+                throw new ArgumentException("Not found");
+            }
+
             var episodeEntity = _mapper.Map<MovieEpisodeEntity>(episode);
             episodeEntity.Id = Guid.NewGuid();
             episodeEntity.CreatedDate = DateTime.Now;

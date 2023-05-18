@@ -41,7 +41,7 @@ namespace OnlineCinema.Tests
             _appDbContext.Database.EnsureDeleted();
             _movieRepository = new MovieRepository(_appDbContext);
             _tagRepository = new TagRepository(_appDbContext);
-            _movieService = new MovieService(_mapper, _logger, _movieRepository);
+            _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService);
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 

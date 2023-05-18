@@ -11,11 +11,11 @@ namespace OnlineCinema.WebApi.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class EpisodeController : Controller
+    public class EpisodesController : Controller
     {
         private readonly IEpisodeService _episodeService;
 
-        public EpisodeController(IEpisodeService episodeService)
+        public EpisodesController(IEpisodeService episodeService)
         {
             _episodeService = episodeService;
         }
@@ -25,7 +25,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// </summary>
         /// <param name="seasonId">Идентификатор сезона</param>
         /// <returns>Список эпизодов</returns> 
-        [HttpPost("list")]
+        [HttpGet]
         public async Task<IActionResult> GetEpisodes(Guid seasonId)
         {
             var episodesList = await _episodeService.GetEpisodes(seasonId);
@@ -52,8 +52,9 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEpisode([FromBody] ChangeEpisodeRequest episode)
         {
-            await _episodeService.CreateEpisode(episode);
-            return Ok(episode);
+            var guid = await _episodeService.CreateEpisode(episode);
+            return Ok(guid);
+            
         }
 
         /// <summary>

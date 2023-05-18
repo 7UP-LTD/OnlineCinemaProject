@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineCinema.Data.Entities;
 
@@ -6,7 +7,7 @@ namespace OnlineCinema.Data.Repositories.IRepositories
 {
     public interface IEpisodeRepository : IBaseRepository<MovieEpisodeEntity>
     {
-        Task<MovieEpisodeEntity?> GetEpisodesBySeasonId(Guid seasonId);
+        Task<List<MovieEpisodeEntity>> GetEpisodesBySeasonId(Guid seasonId);
         
         Task<MovieEpisodeEntity> GetEpisodeById(Guid episodeId);
         

@@ -25,6 +25,13 @@ namespace OnlineCinema.Logic.Services.IServices
         Task<ResponseDto> GetTagByIdAsync(Guid tagId);
 
         /// <summary>
+        /// Получает тег по намиенованию.
+        /// </summary>
+        /// <param name="tagName">Наименование тега.</param>
+        /// <returns>Объект ответа с кодом 200 OK и тегом.</returns>
+        Task<ResponseDto> GetTagByName(string tagName);
+        
+        /// <summary>
         /// Создает новый тег.
         /// </summary>
         /// <param name="model">Данные нового тега.</param>

@@ -23,7 +23,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// </summary>
         /// <param name="movieId">Идентификатор фильма</param>
         /// <returns>Список сезонов фильма</returns>
-        [HttpPost("list")]
+        [HttpGet]
         public async Task<IActionResult> GetSeasons(Guid movieId)
         {
             var seasonsList = await _seasonService.GetSeasons(movieId);
@@ -50,8 +50,8 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateSeason([FromBody] ChangeSeasonRequest season)
         {
-            await _seasonService.CreateSeason(season);
-            return Ok(season);
+            var guid = await _seasonService.CreateSeason(season);
+            return Ok(guid);
         }
 
         /// <summary>

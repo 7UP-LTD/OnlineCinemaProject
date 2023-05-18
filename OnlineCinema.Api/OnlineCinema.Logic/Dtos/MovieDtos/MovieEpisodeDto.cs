@@ -13,8 +13,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public string ContentUrl { get; set; }
         
         public Guid SeasonId { get; set; }
-        public MovieSeasonDto MovieSeason { get; set; }
         
-        public List<EpisodeCommentDto> Comments { get; set; } = new();
+       // public List<EpisodeCommentDto> Comments { get; set; } = new();
     }
 }

@@ -33,7 +33,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         
         public List<Guid> Genres { get; set; } = new();
        
-        public List<Guid> Tags { get; set; } = new();
+        public List<string> Tags { get; set; } = new();
         
     }
 }

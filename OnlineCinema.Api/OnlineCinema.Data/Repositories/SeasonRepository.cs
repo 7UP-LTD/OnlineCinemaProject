@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,11 +19,11 @@ namespace OnlineCinema.Data.Repositories
             _context = context;
         }
 
-        public async Task<MovieSeasonEntity?> GetSeasonsByMovieId(Guid movieId)
+        public async Task<List<MovieSeasonEntity>> GetSeasonsByMovieId(Guid movieId)
         {
             return await _context.MovieSeasons
                 .Include(x => x.Episodes)
-                .FirstOrDefaultAsync(x => x.MovieId == movieId);
+                .Where(x => x.MovieId == movieId).ToListAsync();
         }
 
         public async Task<MovieSeasonEntity?> GetSeasonById(Guid seasonId)

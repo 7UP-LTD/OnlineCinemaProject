@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +18,11 @@ namespace OnlineCinema.Data.Repositories
             _context = context;
         }
 
-        public async Task<MovieEpisodeEntity?> GetEpisodesBySeasonId(Guid seasonId)
+        public async Task<List<MovieEpisodeEntity>> GetEpisodesBySeasonId(Guid seasonId)
         {
             return await _context.MovieEpisodes
                 .Include(x => x.Comments)
-                .FirstOrDefaultAsync(x => x.SeasonId == seasonId);
+                .Where(x => x.SeasonId == seasonId).ToListAsync();
         }
 
         public async Task<MovieEpisodeEntity?> GetEpisodeById(Guid episodeId)

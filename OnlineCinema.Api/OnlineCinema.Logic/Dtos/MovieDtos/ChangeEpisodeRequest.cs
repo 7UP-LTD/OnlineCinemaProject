@@ -13,6 +13,5 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         
         public Guid SeasonId { get; set; }
    
-        public List<Guid> Comments { get; set; } = new();
     }
 }

@@ -53,8 +53,8 @@ namespace OnlineCinema.WebApi.Controllers
         public async Task<IActionResult> CreateMovie([FromBody] ChangeMovieRequest movie)
         {
             //TODO проверка на права по созданию
-            await _movieService.CreateMovie(movie);
-            return Ok(movie);
+            var guid = await _movieService.CreateMovie(movie);
+            return Ok(guid);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace OnlineCinema.WebApi.Controllers
             {
                 return BadRequest();
             }
-         }
+        }
 
         /// <summary>
         /// Удаление фильма по идентификатору
