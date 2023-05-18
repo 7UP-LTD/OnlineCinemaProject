@@ -19,7 +19,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         /// <summary>
         /// год выпуска фильма
         /// </summary>
-        public DateTime ReleaseYear { get; set; }
+        public DateTime ReleaseDate { get; set; }
 
         /// <summary>
         /// ссылка на картинку-заставку
@@ -48,11 +48,6 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public List<MovieGenreDto> Genres { get; set; } = new();
 
         public List<MovieTagDto> Tags { get; set; } = new();
-
-        public List<MovieActorDto> Actors { get; set; } = new();
-
-        public List<MovieDirectorDto> Directors { get; set; } = new();
-
-        public List<MovieWriterDto> Writers { get; set; } = new();
+        
     }
 }

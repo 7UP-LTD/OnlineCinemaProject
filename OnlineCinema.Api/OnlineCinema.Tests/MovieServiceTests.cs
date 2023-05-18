@@ -52,7 +52,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -62,7 +62,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film Two",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -79,7 +79,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -96,7 +96,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -118,7 +118,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -143,7 +143,7 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
