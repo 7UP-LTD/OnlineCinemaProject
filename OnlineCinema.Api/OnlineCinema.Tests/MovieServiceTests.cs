@@ -51,7 +51,6 @@ namespace OnlineCinema.Tests
             await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
@@ -61,7 +60,6 @@ namespace OnlineCinema.Tests
             await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film Two",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
@@ -78,7 +76,6 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
@@ -95,7 +92,6 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
@@ -117,7 +113,6 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
@@ -142,7 +137,6 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
                 ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
