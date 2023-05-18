@@ -8,12 +8,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public string Name { get; set; }
 
         public string? Description { get; set; }
-
-        /// <summary>
-        /// дата добавления на сайт
-        /// </summary>
-        public DateTime DateAdded { get; set; }
-
+        
         /// <summary>
         /// год выпуска фильма
         /// </summary>
