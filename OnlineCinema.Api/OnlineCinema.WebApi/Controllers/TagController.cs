@@ -142,7 +142,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (result.IsSuccess)
                     return Ok(result);
 
-                if (result.StatusCode == HttpStatusCode.NotFound) 
+                if (result.StatusCode == HttpStatusCode.NotFound)
                     return NotFound(result);
 
                 return BadRequest(result);

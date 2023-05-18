@@ -22,8 +22,6 @@ using OnlineCinema.Data.Repositories;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Response;
-using OnlineCinema.Data.Repositories.IRepositories;
-using OnlineCinema.Data.Repositories;
 
 namespace OnlineCinema.WebApi
 {
@@ -45,14 +43,14 @@ namespace OnlineCinema.WebApi
             });
 
             builder.Services.AddIdentity<UserEntity, RoleEntity>(config =>
-            {
-                config.User.RequireUniqueEmail = true;
-                config.Password.RequiredLength = 6;
-                config.Password.RequireUppercase = false;
-                config.Password.RequireLowercase = false;
-                config.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders();
+                {
+                    config.User.RequireUniqueEmail = true;
+                    config.Password.RequiredLength = 6;
+                    config.Password.RequireUppercase = false;
+                    config.Password.RequireLowercase = false;
+                    config.Password.RequireNonAlphanumeric = false;
+                }).AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -70,11 +68,11 @@ namespace OnlineCinema.WebApi
                     ValidateLifetime = true,
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
                 };
             });
 
-            // ����������� ��� ��� ����������� ��������� ��������������
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -83,24 +81,28 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
             builder.Services.AddTransient<IMovieService, MovieService>();
-          
+            builder.Services.AddTransient<ISeasonService, SeasonService>();
+            builder.Services.AddTransient<IEpisodeService, EpisodeService>();
+
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
-            
+            builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
+            builder.Services.AddTransient<IEpisodeRepository, EpisodeRepository>();
+
             builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
-            builder.Services.AddScoped<ITagRepository, TagRepository>();
-            
+
+
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddScoped<IOperationResponse, OperationResponse>();
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<ITagService, TagService>();
-            builder.Services.AddScoped<ITagService, TagService>();
-            
+
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

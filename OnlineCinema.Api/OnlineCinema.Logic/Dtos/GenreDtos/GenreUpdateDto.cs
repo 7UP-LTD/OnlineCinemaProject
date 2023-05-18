@@ -17,13 +17,13 @@ namespace OnlineCinema.Logic.Dtos.GenreDtos
         /// Наименование жанра.
         /// </summary>
         [Required(ErrorMessage = "Наименование жанра обязательное поле.")]
-        [StringLength(50, MinimumLength = 1, ErrorMessage = "Длина названия должна быть не меньше 1 и не больше 50 символов.")]
+        [StringLength(50, MinimumLength = 1,
+            ErrorMessage = "Длина названия должна быть не меньше 1 и не больше 50 символов.")]
         public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Описание жанра.
+        /// URL изображения жанра
         /// </summary>
-        [Required(ErrorMessage = "Описание жанра обязательное поле.")]
-        public string Description { get; set; } = null!;
+        public string? ImageUrl { get; set; } = null!;
     }
 }
