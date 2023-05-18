@@ -15,7 +15,6 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public DateTime ReleaseDate { get; set; }
         
         public Guid MovieId { get; set; }
-        public MovieDto Movie { get; set; }
         
         public List<MovieEpisodeDto> Episodes { get; set; } = new();
     }

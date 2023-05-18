@@ -18,8 +18,8 @@ namespace OnlineCinema.Logic.Dtos.GenreDtos
         public string Name { get; set; } = null!;
 
         /// <summary>
-        /// Описание жанра.
+        /// URL изображения жанра
         /// </summary>
-        public string Description { get; set; } = null!;
+        public string? ImageUrl { get; set; } = null!;
     }
 }

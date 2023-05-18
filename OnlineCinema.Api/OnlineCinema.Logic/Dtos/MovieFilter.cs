@@ -16,5 +16,7 @@ namespace OnlineCinema.Logic.Dtos
         public DateTime? ReleaseDate { get; set; }
 
         public DateTime? CreatedDate { get; set; }
+        
+        public bool? IsSeries { get; set; }
     }
 }

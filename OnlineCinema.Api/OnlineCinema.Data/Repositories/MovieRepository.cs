@@ -23,9 +23,9 @@ namespace OnlineCinema.Data.Repositories
             return await _context.Movies
                 .Include(x => x.Seasons)
                 .ThenInclude(x => x.Episodes)
-                // .Include(x => x.Actors)
-                // .Include(x => x.Directors)
-                // .Include(x => x.Writers)
+                .Include(x => x.Tags)
+                .Include(x => x.Genres)
+                .Include(x => x.Comments)
                 .FirstOrDefaultAsync(x => x.Id == movieId);
         }
 
@@ -47,7 +47,7 @@ namespace OnlineCinema.Data.Repositories
 
                 if (filter.Genres != null && filter.Genres.Count > 0)
                 {
-                    query = query.Where(o => o.Genres.Any(g => filter.Genres.Contains(g.GenreId)));
+                    query = query.Where(o => o.Genres.Any(g => filter.Genres.Contains(g.DicGenreId)));
                 }
 
                 if (filter.Tags != null && filter.Tags.Count > 0)
@@ -65,28 +65,26 @@ namespace OnlineCinema.Data.Repositories
                     query = query.Where(x => x.ReleaseDate.Year == filter.ReleaseDate.Value.Year);
                 }
                 
+                if (filter.IsSeries.HasValue)
+                {
+                    query = query.Where(x => x.IsSeries == filter.IsSeries.Value);
+                }
             }
 
             return await query.ToListAsync();
         }
-
+        
         public async Task UpdateMovie(Guid id, MovieEntity movie)
         {
-            // var movieActors = await _context.MovieActors.Where(x => x.MovieId == id).ToListAsync();
-            // _context.MovieActors.RemoveRange(movieActors);
-            // var movieDirectors = await _context.MovieDirectors.Where(x => x.MovieId == id).ToListAsync();
-            // _context.MovieDirectors.RemoveRange(movieDirectors);
-            // var movieWriters = await _context.MovieWriters.Where(x => x.MovieId == id).ToListAsync();
-            // _context.MovieWriters.RemoveRange(movieWriters);
             var movieTags = await _context.MovieTags.Where(x => x.MovieId == id).ToListAsync();
             _context.MovieTags.RemoveRange(movieTags);
             var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToListAsync();
             _context.MovieGenres.RemoveRange(movieGenres);
+            // var movieComments = await _context.MovieComments.Where(x => x.MovieId == id).ToListAsync();
+            // _context.MovieWriters.RemoveRange(movieComments);
 
             var movieEntity = _context.Movies
-                // .Include(x => x.Actors)
-                // .Include(x => x.Directors)
-                // .Include(x => x.Writers)
+                .Include(x => x.Comments)
                 .Include(x => x.Tags)
                 .Include(x => x.Genres)
                 .FirstOrDefault(x => x.Id == id)!;
@@ -98,39 +96,18 @@ namespace OnlineCinema.Data.Repositories
             _context.Movies.Update(movie);
 
             // Добавление связанных коллекций
-            // _context.MovieActors.AddRange(movie.Actors.Select(x => new MovieActorEntity()
-            // {
-            //     Id = Guid.NewGuid(),
-            //     MovieId = id,
-            //     ActorId = x.ActorId
-            // }));
-            //
-            // _context.MovieDirectors.AddRange(movie.Directors.Select(x => new MovieDirectorEntity()
-            // {
-            //     Id = Guid.NewGuid(),
-            //     MovieId = id,
-            //     DirectorId = x.DirectorId
-            // }));
-            //
-            // _context.MovieWriters.AddRange(movie.Writers.Select(x => new MovieWriterEntity()
-            // {
-            //     Id = Guid.NewGuid(),
-            //     MovieId = id,
-            //     WriterId = x.WriterId
-            // }));
-
             _context.MovieTags.AddRange(movie.Tags.Select(x => new MovieTagEntity()
             {
                 Id = Guid.NewGuid(),
                 MovieId = id,
                 TagId = x.TagId
             }));
-            
+
             _context.MovieGenres.AddRange(movie.Genres.Select(x => new MovieGenreEntity()
             {
                 Id = Guid.NewGuid(),
                 MovieId = id,
-                GenreId = x.GenreId
+                DicGenreId = x.DicGenreId
             }));
 
             await _context.SaveChangesAsync();

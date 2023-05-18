@@ -41,7 +41,7 @@ namespace OnlineCinema.Tests
             _appDbContext.Database.EnsureDeleted();
             _movieRepository = new MovieRepository(_appDbContext);
             _tagRepository = new TagRepository(_appDbContext);
-            _movieService = new MovieService(_mapper, _logger, _movieRepository);
+            _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService);
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 
@@ -51,8 +51,7 @@ namespace OnlineCinema.Tests
             await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -61,8 +60,7 @@ namespace OnlineCinema.Tests
             await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film Two",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -78,8 +76,7 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -95,8 +92,7 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -117,8 +113,7 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
@@ -142,8 +137,7 @@ namespace OnlineCinema.Tests
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
-                DateAdded = DateTime.Now,
-                ReleaseYear = DateTime.Now,
+                ReleaseDate = DateTime.Now,
                 MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
