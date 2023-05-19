@@ -64,7 +64,7 @@ namespace OnlineCinema.Data.Repositories
                 {
                     query = query.Where(x => x.ReleaseDate.Year == filter.ReleaseDate.Value.Year);
                 }
-                
+
                 if (filter.IsSeries.HasValue)
                 {
                     query = query.Where(x => x.IsSeries == filter.IsSeries.Value);
@@ -72,45 +72,6 @@ namespace OnlineCinema.Data.Repositories
             }
 
             return await query.ToListAsync();
-        }
-        
-        public async Task UpdateMovie(Guid id, MovieEntity movie)
-        {
-            var movieTags = await _context.MovieTags.Where(x => x.MovieId == id).ToListAsync();
-            _context.MovieTags.RemoveRange(movieTags);
-            var movieGenres = await _context.MovieGenres.Where(x => x.MovieId == id).ToListAsync();
-            _context.MovieGenres.RemoveRange(movieGenres);
-            // var movieComments = await _context.MovieComments.Where(x => x.MovieId == id).ToListAsync();
-            // _context.MovieWriters.RemoveRange(movieComments);
-
-            var movieEntity = _context.Movies
-                .Include(x => x.Comments)
-                .Include(x => x.Tags)
-                .Include(x => x.Genres)
-                .FirstOrDefault(x => x.Id == id)!;
-            if (movieEntity == null)
-            {
-                throw new ArgumentException("Not found");
-            }
-
-            _context.Movies.Update(movie);
-
-            // Добавление связанных коллекций
-            _context.MovieTags.AddRange(movie.Tags.Select(x => new MovieTagEntity()
-            {
-                Id = Guid.NewGuid(),
-                MovieId = id,
-                TagId = x.TagId
-            }));
-
-            _context.MovieGenres.AddRange(movie.Genres.Select(x => new MovieGenreEntity()
-            {
-                Id = Guid.NewGuid(),
-                MovieId = id,
-                DicGenreId = x.DicGenreId
-            }));
-
-            await _context.SaveChangesAsync();
         }
     }
 }

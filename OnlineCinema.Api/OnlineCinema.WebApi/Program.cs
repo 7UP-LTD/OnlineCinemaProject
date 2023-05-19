@@ -88,10 +88,15 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IMovieService, MovieService>();
             builder.Services.AddTransient<ISeasonService, SeasonService>();
             builder.Services.AddTransient<IEpisodeService, EpisodeService>();
-
+           
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
             builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
             builder.Services.AddTransient<IEpisodeRepository, EpisodeRepository>();
+
+            builder.Services.AddTransient<IMovieTagRepository, MovieTagRepository>();
+            builder.Services.AddTransient<IMovieGenreRepository, MovieGenreRepository>();
+            
+            builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
             builder.Services.AddTransient<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddTransient<IOperationResponse, OperationResponse>();
             builder.Services.AddTransient<IGenreService, GenreService>();
