@@ -7,6 +7,7 @@ using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
+using OnlineCinema.Logic.Dtos.CommentDto;
 
 namespace OnlineCinema.Logic.Mapper
 {
@@ -23,8 +24,8 @@ namespace OnlineCinema.Logic.Mapper
             #region RegisterUserDto/UserEntity
 
             CreateMap<RegisterUserDto, UserEntity>()
-                .ForMember(src => src.NormalizedEmail, opt => opt.MapFrom(dest => dest.Email.ToUpper()))
-                .ForMember(src => src.NormalizedUserName, opt => opt.MapFrom(dest => dest.UserName.ToUpper()));
+                .ForMember(dest => dest.NormalizedEmail, opt => opt.MapFrom(src => src.Email.ToUpper()))
+                .ForMember(dest => dest.NormalizedUserName, opt => opt.MapFrom(src => src.UserName.ToUpper()));
 
             #endregion
 
@@ -98,6 +99,21 @@ namespace OnlineCinema.Logic.Mapper
 
             CreateMap<TagCreateDto, DicTagEntity>()
                 .ForMember(src => src.CreatedDate, opt => opt.MapFrom(dest => DateTime.Now));
+
+            #endregion
+
+            #region MovieCommentEntity/NewCommentDto
+
+            CreateMap<NewCommentDto, MovieCommentEntity>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.Movie, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
+
+            #endregion
+
+            #region FavoriteMovieDto/MovieEntity
+
+            CreateMap<MovieEntity, FavoriteMovieDto>();
 
             #endregion
         }

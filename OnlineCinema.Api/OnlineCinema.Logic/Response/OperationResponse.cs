@@ -22,7 +22,7 @@ namespace OnlineCinema.Logic.Response
             };
 
         /// <inheritdoc/>
-        public ResponseDto NotFound(List<string> errors, object? result = null) =>
+        public ResponseDto NotFound(string errors, object? result = null) =>
              new()
              {
                  StatusCode = HttpStatusCode.NotFound,
@@ -32,7 +32,7 @@ namespace OnlineCinema.Logic.Response
              };
 
         /// <inheritdoc/>
-        public ResponseDto BadRequest(List<string> errors, object? result = null) =>
+        public ResponseDto BadRequest(string errors, object? result = null) =>
             new()
             {
                 StatusCode = HttpStatusCode.BadRequest,
@@ -66,16 +66,6 @@ namespace OnlineCinema.Logic.Response
                 StatusCode = HttpStatusCode.NoContent,
                 IsSuccess = true,
                 Result = "Информация успешно удалена."
-            };
-
-        /// <inheritdoc/>
-        public ResponseDto ModelStateIsNotValid(ModelStateDictionary modelState) =>
-            new()
-            {
-                StatusCode = HttpStatusCode.BadRequest,
-                Result = "Одно или несколько полей не валидны.",
-                IsSuccess = false,
-                Errors = modelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList()
             };
     }
 }

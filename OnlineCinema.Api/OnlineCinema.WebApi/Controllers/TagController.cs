@@ -1,8 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
-using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
-using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,17 +18,14 @@ namespace OnlineCinema.WebApi.Controllers
     public class TagController : ControllerBase
     {
         private readonly ITagService _tagService;
-        private readonly IErrorResponse _errorResponse;
 
         /// <summary>
         /// Конструктор контроллера тегов.
         /// </summary>
         /// <param name="tagService">Сервис тегов.</param>
-        /// <param name="errorResponse">Сервис для формирования ошибочных ответов.</param>
-        public TagController(ITagService tagService, IErrorResponse errorResponse)
+        public TagController(ITagService tagService)
         {
             _tagService = tagService;
-            _errorResponse = errorResponse;
         }
 
         /// <summary>
@@ -40,19 +35,18 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="200">Успешный запрос. Возвращает коллекцию объектов тегов.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращает сообщение об ошибке.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(IEnumerable<TagDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllTagsAsync()
         {
             try
             {
                 var result = await _tagService.GetAllTagsAsync();
-                return Ok(result);
+                return Ok(result.Result);
             }
-            catch
+            catch (Exception ex)
             {
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -65,23 +59,22 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="404">Тег не найден.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTagBuIdAsync(Guid id)
+        [ProducesResponseType(typeof(TagDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTagByIdAsync(Guid id)
         {
             try
             {
                 var result = await _tagService.GetTagByIdAsync(id);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.Result);
 
-                return NotFound(result);
+                return NotFound(result.Errors);
             }
-            catch
+            catch (Exception ex)
             {
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -91,29 +84,28 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="model">Модель данных для создания тега.</param>
         /// <returns>Результат операции создания тега.</returns>
         /// <response code="200">Успешный ответ с кодом 200 и с ответом о создании.</response>
-        /// <response code="404">Ошибка валидации модели. Возвращается BadRequestResponse с ошибками.</response>
+        /// <response code="404">Ошибка валидации модели. Возвращается BadRequestResponse со списком ошибок.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateTagAsync([FromBody] TagCreateDto model)
         {
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(_tagService.ModelStateIsValid(ModelState));
+                    return BadRequest(ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList());
 
                 var result = await _tagService.CreateTagAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok(result.Result);
 
-                return BadRequest(result);
+                return BadRequest(result.Errors);
             }
-            catch
+            catch (Exception ex)
             {
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -127,30 +119,29 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="400">Некорректный запрос. С описанием ошибки.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
         [HttpPut]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateTagAsync([FromBody] TagDto model)
         {
             try
             {
                 if (!ModelState.IsValid)
-                    return BadRequest(_tagService.ModelStateIsValid(ModelState));
+                    return BadRequest(ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList());
 
                 var result = await _tagService.UpdateTagAsync(model);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return Ok();
 
                 if (result.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(result);
+                    return NotFound(result.Errors);
 
-                return BadRequest(result);
+                return BadRequest(result.Errors);
             }
-            catch
+            catch(Exception ex) 
             {
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -160,26 +151,25 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="id">Идентификатор тега.</param>
         /// <returns>Результат операции удаления тега.</returns>
         /// <response code="204">Успешный ответ с кодом 204 тег удален.</response>
-        /// <response code="404">Тег не найден с ответом об операции.</response>
+        /// <response code="404">Тег не найден с ответом об операции и списком ошибок.</response>
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteTagAsync(Guid id)
         {
             try
             {
                 var result = await _tagService.DeleteTagAsync(id);
                 if (result.IsSuccess)
-                    return Ok(result);
+                    return NoContent();
 
-                return NotFound(result);
+                return NotFound(result.Errors);
             }
-            catch
+            catch (Exception ex)
             {
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

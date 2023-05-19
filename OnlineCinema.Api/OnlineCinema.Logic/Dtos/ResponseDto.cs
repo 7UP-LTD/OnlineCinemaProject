@@ -26,6 +26,6 @@ namespace OnlineCinema.Logic.Dtos
         /// <summary>
         /// Список ошибок, если есть.
         /// </summary>
-        public List<string>? Errors { get; set; }
+        public string? Errors { get; set; }
     }
 }

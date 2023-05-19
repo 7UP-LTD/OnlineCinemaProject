@@ -25,6 +25,8 @@ namespace OnlineCinema.Logic.Services
         /// Конструктор класса GenreService.
         /// </summary>
         /// <param name="genreRepository">Репозиторий жанров.</param>
+        /// <param name="mapper">AutoMapper для маппинга классов.</param>
+        /// <param name="response">Класс для ответа в контроллер.</param>
         public GenreService(IGenreRepository genreRepository, IMapper mapper, IOperationResponse response)
         {
             _genreRepository = genreRepository;
@@ -45,7 +47,7 @@ namespace OnlineCinema.Logic.Services
         {
             var genre = await _genreRepository.GetOrDefaultAsync(g => g.Id == genreId);
             if (genre is null)
-                return _response.NotFound(new List<string> { $"Жанр с таким ID {genreId} не найден." });
+                return _response.NotFound($"Жанр с таким ID {genreId} не найден.");
 
             var genreDto = _mapper.Map<GenreDto>(genre);
             return _response.SuccessResponse(genreDto);
@@ -56,12 +58,11 @@ namespace OnlineCinema.Logic.Services
         {
             var genreExist = await _genreRepository.GetOrDefaultAsync(g => g.Name.ToUpper() == model.Name.ToUpper());
             if (genreExist is not null)
-                return _response.BadRequest(new List<string> { $"Жанр с таким названием уже существует {model.Name}." }, model);
+                return _response.BadRequest($"Жанр с таким названием уже существует {model.Name}.");
 
             var genre = _mapper.Map<DicGenreEntity>(model);
             await _genreRepository.AddAsync(genre);
-            var createdGenre = await _genreRepository.GetOrDefaultAsync(g => g.Name == model.Name);
-            return _response.CreatedSuccessfully(createdGenre!.Id);
+            return _response.CreatedSuccessfully(genre!.Id);
         }
 
         /// <inheritdoc/>
@@ -69,12 +70,12 @@ namespace OnlineCinema.Logic.Services
         {
             var genre = await _genreRepository.GetOrDefaultAsync(g => g.Id == model.Id);
             if (genre is null)
-                return _response.NotFound(new List<string> { $"Жанр с таким ID: {model.Id} не найден." }, model);
+                return _response.NotFound("Жанр с таким ID: {model.Id} не найден.");
 
             var genreNameExist = await _genreRepository.GetOrDefaultAsync(g => g.Name.ToUpper() == model.Name.ToUpper() && 
                                                                                g.Id != model.Id);
             if (genreNameExist is not null)
-                return _response.BadRequest(new List<string> { $"Жанр с таким названием уже существует {model.Name}." }, model);
+                return _response.BadRequest($"Жанр с таким названием уже существует {model.Name}.");
 
             genre = _mapper.Map<DicGenreEntity>(model);
             await _genreRepository.UpdateAsync(genre);
@@ -86,13 +87,10 @@ namespace OnlineCinema.Logic.Services
         {
             var genreExist = await _genreRepository.GetOrDefaultAsync(g => g.Id == genreId);
             if (genreExist is null)
-                return _response.NotFound(new List<string> { $"Жанр с таким ID: {genreId} не найден." });
+                return _response.NotFound($"Жанр с таким ID: {genreId} не найден.");
 
             await _genreRepository.DeleteAsync(genreExist);
             return _response.DeleteSuccessfully();
         }
-
-        /// <inheritdoc/>
-        public ResponseDto ModelIsNotValid(ModelStateDictionary modelState) => _response.ModelStateIsNotValid(modelState);
     }
 }

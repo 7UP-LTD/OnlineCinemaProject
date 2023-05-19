@@ -35,7 +35,7 @@ namespace OnlineCinema.Logic.Services.IServices
         /// Создает новый тег.
         /// </summary>
         /// <param name="model">Данные нового тега.</param>
-        /// <returns>Объект ответа с кодом 200 OK при успешном создании.</returns>
+        /// <returns>Объект ответа с кодом 204 при успешном создании.</returns>
         Task<ResponseDto> CreateTagAsync(TagCreateDto model);
 
         /// <summary>
@@ -49,14 +49,7 @@ namespace OnlineCinema.Logic.Services.IServices
         /// Удаляет тег по идентификатору.
         /// </summary>
         /// <param name="tagId">Идентификатор тега.</param>
-        /// <returns>Объект ответа с кодом 200 OK при успешном удалении.</returns>
+        /// <returns>Объект ответа с кодом 204 при успешном удалении.</returns>
         Task<ResponseDto> DeleteTagAsync(Guid tagId);
-
-        /// <summary>
-        /// Формирует ответ операции с кодом 400 Bad Request при валидной модели.
-        /// </summary>
-        /// <param name="modelState">ModelState модели.</param>
-        /// <returns>Объект ответа с кодом 400 Bad Request и ошибками валидации модели.</returns>
-        ResponseDto ModelStateIsValid(ModelStateDictionary modelState);
     }
 }
