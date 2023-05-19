@@ -22,7 +22,7 @@ namespace OnlineCinema.Logic.Response
             };
 
         /// <inheritdoc/>
-        public ResponseDto NotFound(List<string> errors, object? result = null) =>
+        public ResponseDto NotFound(string errors, object? result = null) =>
              new()
              {
                  StatusCode = HttpStatusCode.NotFound,
@@ -32,7 +32,7 @@ namespace OnlineCinema.Logic.Response
              };
 
         /// <inheritdoc/>
-        public ResponseDto BadRequest(List<string> errors, object? result = null) =>
+        public ResponseDto BadRequest(string errors, object? result = null) =>
             new()
             {
                 StatusCode = HttpStatusCode.BadRequest,

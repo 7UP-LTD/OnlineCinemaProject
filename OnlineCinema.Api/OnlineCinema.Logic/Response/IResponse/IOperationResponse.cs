@@ -22,7 +22,7 @@ namespace OnlineCinema.Logic.Response.IResponse
         /// <param name="errors">Список ошибок.</param>
         /// <param name="result">Дополнительные данные результата.</param>
         /// <returns>Объект ответа с кодом 404 Not Found.</returns>
-        ResponseDto NotFound(List<string> errors, object? result = null);
+        ResponseDto NotFound(string errors, object? result = null);
 
         /// <summary>
         /// Формирует ответ операции с кодом 400 Bad Request.
@@ -30,7 +30,7 @@ namespace OnlineCinema.Logic.Response.IResponse
         /// <param name="errors">Список ошибок.</param>
         /// <param name="result">Дополнительные данные результата.</param>
         /// <returns>Объект ответа с кодом 400 Bad Request.</returns>
-        ResponseDto BadRequest(List<string> errors, object? result = null);
+        ResponseDto BadRequest(string errors, object? result = null);
 
         /// <summary>
         /// Формирует успешный ответ операции с кодом 201 Created.

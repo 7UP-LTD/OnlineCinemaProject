@@ -61,7 +61,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GenreDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(List<string>),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string),StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetGenreByIdAsync(Guid id)
         {
@@ -90,7 +90,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateGenreAsync([FromBody] GenreCreateDto model)
         {
@@ -122,8 +122,8 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(List<string>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateGenreAsync([FromBody] GenreUpdateDto model)
         {
@@ -158,7 +158,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="500">Внутренняя ошибка сервера. Возвращается ErrorResponse с сообщением об ошибке.</response> 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(List<string>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteGenreAsync(Guid id)
         {

@@ -8,8 +8,6 @@ namespace OnlineCinema.Logic.Dtos.CommentDto
 {
     public class NewCommentDto
     {
-        public Guid UserId { get; set; }
-
         public Guid MovieId { get; set; }
 
         public string Text { get; set; } = null!;

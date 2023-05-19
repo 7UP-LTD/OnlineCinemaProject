@@ -20,7 +20,7 @@ namespace OnlineCinema.Logic.Services.IServices
         /// </summary>
         /// <param name="model">Модель нового комментария.</param>
         /// <returns>Ответ операции в виде объекта <see cref="ResponseDto"/>.</returns>
-        Task<ResponseDto> PostNewCommentAsync(NewCommentDto model);
+        Task<ResponseDto> PostNewCommentAsync(Guid userId, NewCommentDto model);
 
         /// <summary>
         /// Обновляет комментарий асинхронно.

@@ -17,7 +17,6 @@ namespace OnlineCinema.Logic.Services
     public class CommentService : ICommentService
     {
         private readonly IBaseRepository<MovieCommentEntity> _commentRepository;
-        private readonly IBaseRepository<UserEntity> _userRepository;
         private readonly IBaseRepository<MovieEntity> _movieRepository;
         private readonly IMapper _mapper;
         private readonly IOperationResponse _response;
@@ -33,35 +32,30 @@ namespace OnlineCinema.Logic.Services
         public CommentService(
             BaseRepository<MovieCommentEntity> commentRepository,
             IOperationResponse response,
-            IBaseRepository<UserEntity> userRepository,
             IBaseRepository<MovieEntity> movieRepository,
             IMapper mapper)
         {
             _commentRepository = commentRepository;
-            _userRepository = userRepository;
             _movieRepository = movieRepository;
             _response = response;
             _mapper = mapper;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseDto> PostNewCommentAsync(NewCommentDto model)
+        public async Task<ResponseDto> PostNewCommentAsync(Guid userId, NewCommentDto model)
         {
             var doesCommentExist = _commentRepository.GetOrDefaultAsync(c => c.MovieId == model.MovieId &&
-                                                                             c.UserId == model.UserId &&
+                                                                             c.UserId == userId &&
                                                                              c.Text == model.Text);
             if (doesCommentExist is not null)
-                return _response.BadRequest(new List<string> { "Комментарий уже существует." }, model);
-
-            var user = await _userRepository.GetOrDefaultAsync(m => m.Id == model.UserId);
-            if (user is null)
-                return _response.NotFound(new List<string> { $"Пользователь по указанному ID {model.UserId} не найден." });
+                return _response.BadRequest("Комментарий уже существует.");
 
             var movie = await _movieRepository.GetOrDefaultAsync(u => u.Id == model.MovieId);
             if (movie is null)
-                return _response.NotFound(new List<string> { $"Фмльм по указанному ID {model.MovieId} не найден." });
+                return _response.NotFound($"Фмльм по указанному ID {model.MovieId} не найден.");
 
             var newComment = _mapper.Map<MovieCommentEntity>(model);
+            newComment.UserId = userId;
             await _commentRepository.AddAsync(newComment);
             return _response.SuccessResponse(newComment.Id);
         }
@@ -71,7 +65,7 @@ namespace OnlineCinema.Logic.Services
         {
             var comment = await _commentRepository.GetOrDefaultAsync(c => c.Id == model.Id);
             if (comment is null)
-                return _response.NotFound(new List<string> { $"Комментарий по указанному ID {model.Id} не найден." });
+                return _response.NotFound($"Комментарий по указанному ID {model.Id} не найден.");
 
             comment.Text = model.Text;
             return _response.SuccessResponse();
@@ -82,7 +76,7 @@ namespace OnlineCinema.Logic.Services
         {
             var comment = await _commentRepository.GetOrDefaultAsync(c => c.Id == commentId);
             if (comment is null)
-                return _response.NotFound(new List<string> { $"Комментарий по указанному ID {commentId} не найден." });
+                return _response.NotFound($"Комментарий по указанному ID {commentId} не найден.");
 
             await _commentRepository.DeleteAsync(comment);
             return _response.DeleteSuccessfully();

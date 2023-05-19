@@ -103,6 +103,12 @@ namespace OnlineCinema.Logic.Mapper
                 .ForMember(dest => dest.User, opt => opt.Ignore());
 
             #endregion
+
+            #region FavoriteMovieDto/MovieEntity
+
+            CreateMap<MovieEntity, FavoriteMovieDto>();
+
+            #endregion
         }
     }
 }
