@@ -78,6 +78,8 @@ namespace OnlineCinema.WebApi
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
             builder.Services.AddTransient<IMovieService, MovieService>();
@@ -101,7 +103,6 @@ namespace OnlineCinema.WebApi
             builder.Services.AddScoped<IOperationResponse, OperationResponse>();
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<ITagService, TagService>();
-
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

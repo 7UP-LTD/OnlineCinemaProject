@@ -44,12 +44,5 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="model">Модель обновления жанра.</param>
         /// <returns>Результат операции обновления жанра.</returns>
         Task<ResponseDto> DeleteGenreAsync(Guid genreId);
-
-        /// <summary>
-        /// Формирует ответ операции с кодом 400 Bad Request при невалидной модели.
-        /// </summary>
-        /// <param name="modelState">ModelState модели.</param>
-        /// <returns>Объект ответа с кодом 400 Bad Request и ошибками валидации модели.</returns>
-        ResponseDto ModelIsNotValid(ModelStateDictionary modelState);
     }
 }

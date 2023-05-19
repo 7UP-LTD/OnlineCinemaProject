@@ -49,12 +49,5 @@ namespace OnlineCinema.Logic.Response.IResponse
         /// </summary>
         /// <returns>Объект успешного ответа с кодом 204 NoContet удаления данных.</returns>
         ResponseDto DeleteSuccessfully();
-
-        /// <summary>
-        /// Формирует ответ операции с кодом 400 Bad Request при невалидной модели.
-        /// </summary>
-        /// <param name="modelState">ModelState модели.</param>
-        /// <returns>Объект ответа с кодом 400 Bad Request и ошибками валидации модели.</returns>
-        ResponseDto ModelStateIsNotValid(ModelStateDictionary modelState);
     }
 }

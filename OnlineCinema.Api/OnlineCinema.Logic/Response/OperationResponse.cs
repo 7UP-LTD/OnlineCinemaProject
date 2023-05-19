@@ -67,15 +67,5 @@ namespace OnlineCinema.Logic.Response
                 IsSuccess = true,
                 Result = "Информация успешно удалена."
             };
-
-        /// <inheritdoc/>
-        public ResponseDto ModelStateIsNotValid(ModelStateDictionary modelState) =>
-            new()
-            {
-                StatusCode = HttpStatusCode.BadRequest,
-                Result = "Одно или несколько полей не валидны.",
-                IsSuccess = false,
-                Errors = modelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)).ToList()
-            };
     }
 }

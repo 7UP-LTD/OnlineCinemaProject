@@ -80,12 +80,11 @@ namespace OnlineCinema.Logic.Services
         {
             var tagExist = await _tagRepository.GetOrDefaultAsync(t => t.Name.ToUpper() == model.Name.ToUpper());
             if (tagExist is not null)
-                return _response.BadRequest(new List<string> { $"Тег с таким наименование уже существует {model.Name}." }, model);
+                return _response.BadRequest(new List<string> { $"Тег с таким наименование уже существует {model.Name}." });
 
             var tag = _mapper.Map<DicTagEntity>(model);
             await _tagRepository.AddAsync(tag);
-            var createdTag = await _tagRepository.GetOrDefaultAsync(t => t.Name == model.Name);
-            return _response.CreatedSuccessfully(createdTag!.Id);
+            return _response.CreatedSuccessfully(tag!.Id);
         }
 
         /// <inheritdoc/>
@@ -93,12 +92,12 @@ namespace OnlineCinema.Logic.Services
         {
             var tag = await _tagRepository.GetOrDefaultAsync(t => t.Id == model.Id);
             if (tag is null)
-                return _response.NotFound(new List<string> { "Тег не найден." }, model);
+                return _response.NotFound(new List<string> { "Тег не найден." });
 
             var isNameExist = await _tagRepository.GetOrDefaultAsync(t => t.Name.ToUpper() == model.Name.ToUpper() &&
                                                                           t.Id != model.Id);
             if (isNameExist is not null)
-                return _response.BadRequest(new List<string> { $"Тег с таким наименование {model.Name} уже существует." }, model);
+                return _response.BadRequest(new List<string> { $"Тег с таким наименование {model.Name} уже существует." });
 
             tag = _mapper.Map<DicTagEntity>(model);
             await _tagRepository.UpdateAsync(tag);
@@ -115,8 +114,5 @@ namespace OnlineCinema.Logic.Services
             await _tagRepository.DeleteAsync(tag);
             return _response.DeleteSuccessfully();
         }
-
-        /// <inheritdoc/>
-        public ResponseDto ModelStateIsValid(ModelStateDictionary modelState) => _response.ModelStateIsNotValid(modelState);
     }
 }
