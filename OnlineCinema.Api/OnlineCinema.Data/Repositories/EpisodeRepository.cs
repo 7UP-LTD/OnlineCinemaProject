@@ -34,12 +34,11 @@ namespace OnlineCinema.Data.Repositories
 
         public async Task UpdateEpisode(Guid id, MovieEpisodeEntity episode)
         {
-            var episodeComments = await _context.EpisodeComments.Where(x => x.EpisodeId == id).ToListAsync();
-            if (episodeComments != null) _context.EpisodeComments.RemoveRange(episodeComments);
+            // var episodeComments = await _context.EpisodeComments.Where(x => x.EpisodeId == id).ToListAsync();
+            // if (episodeComments != null) _context.EpisodeComments.RemoveRange(episodeComments);
 
 
-            var episodeEntity = _context.MovieSeasons
-                .Include(x => x.Episodes)
+            var episodeEntity = _context.MovieEpisodes
                 .FirstOrDefault(x => x.Id == id)!;
             if (episodeEntity == null)
             {
@@ -49,12 +48,12 @@ namespace OnlineCinema.Data.Repositories
             _context.MovieEpisodes.Update(episode);
 
             // Добавление связанных коллекций
-            _context.EpisodeComments.AddRange(episode.Comments.Select(x => new EpisodeCommentEntity()
-            {
-                Id = Guid.NewGuid(),
-                EpisodeId = id,
-                UserId = x.UserId
-            }));
+            // _context.EpisodeComments.AddRange(episode.Comments.Select(x => new EpisodeCommentEntity()
+            // {
+            //     Id = Guid.NewGuid(),
+            //     EpisodeId = id,
+            //     UserId = x.UserId
+            // }));
 
             await _context.SaveChangesAsync();
         }
