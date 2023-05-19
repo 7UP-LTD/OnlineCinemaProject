@@ -23,7 +23,6 @@ namespace OnlineCinema.WebApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
-        private readonly IErrorResponse _errorResponse;
 
         /// <summary>
         /// Конструктор контроллера аутентификации.
@@ -32,11 +31,9 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="configuration">Конфигурация.</param>
         public AuthController(
             IAuthService authService, 
-            IErrorResponse errorResponse,
             IConfiguration configuration)
         {
             _authService = authService;
-            _errorResponse = errorResponse;
             _configuration = configuration;
         }
 
@@ -51,7 +48,7 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost("Register")]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto model)
         {
             try
@@ -72,8 +69,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования. Ещё бы вспомнить как один раз только делал.
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -92,7 +88,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string token, string redirectUrl)
         {
             try
@@ -109,8 +105,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -125,7 +120,7 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost("Login")]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
         {
             try
@@ -146,8 +141,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -165,7 +159,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ForgetPassword(string email, string redirectUrl)
         {
             try
@@ -182,8 +176,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch (Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -198,7 +191,7 @@ namespace OnlineCinema.WebApi.Controllers
         [HttpPost("ResetPassword")]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponseDto), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto model)
         {
             try
@@ -219,8 +212,7 @@ namespace OnlineCinema.WebApi.Controllers
             catch(Exception ex)
             {
                 //TODO: Добавить жернал логгирования
-                var errorModel = _errorResponse.InternalServerError();
-                return StatusCode(StatusCodes.Status500InternalServerError, errorModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
