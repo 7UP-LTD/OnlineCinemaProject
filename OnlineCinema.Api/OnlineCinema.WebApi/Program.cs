@@ -90,8 +90,6 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
             builder.Services.AddTransient<IEpisodeRepository, EpisodeRepository>();
 
-            builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
-
             builder.Services.AddAutoMapper(typeof(MapperConfig));
 
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
