@@ -43,9 +43,11 @@ namespace OnlineCinema.Logic.Services
             if (movie == null)
                 return _response.NotFound($"Фильм не найден с таким ID {movieId}.");
 
-            var userFavoriteMovie = new UserFavoriteMovieEntity();
-            userFavoriteMovie.UserId = userId;
-            userFavoriteMovie.MovieId = movieId;
+            var userFavoriteMovie = new UserFavoriteMovieEntity
+            {
+                UserId = userId,
+                MovieId = movieId
+            };
             await _favoriteRepository.AddAsync(userFavoriteMovie);
             return _response.CreatedSuccessfully(userFavoriteMovie.Id);
         }
