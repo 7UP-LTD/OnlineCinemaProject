@@ -56,7 +56,7 @@ namespace OnlineCinema.Logic.Services
         /// <inheritdoc/>
         public async Task<ResponseDto> GetTagByNameAsync(string tagName)
         {
-            var tag = await _tagRepository.GetTagByName( tagName);
+            var tag = await _tagRepository.GetOrDefaultAsync(t => t.Name.ToUpper() == tagName.ToUpper());
             if (tag is null)
                 return _response.NotFound(new List<string> { $"Тег с таким ID {tagName} не найден." });
 
