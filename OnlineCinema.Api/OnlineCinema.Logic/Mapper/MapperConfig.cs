@@ -34,9 +34,15 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<MovieFilter, MovieEntityFilter>();
             CreateMap<ChangeMovieRequest, MovieEntity>()
                 .ForMember(x => x.Tags, o => o.Ignore());
-            CreateMap<MovieDto, MovieEntity>()
+            CreateMap<MovieDto, MovieEntity>();
+            CreateMap<MovieEntity, MovieDto>()
                 .ReverseMap();
+            CreateMap<MovieGenreEntity, MovieGenreDto>();
+            CreateMap<MovieTagEntity, MovieTagDto>();
+            CreateMap<MovieCommentEntity, MovieCommentDto>();
+            
             CreateMap<MovieDto, ChangeMovieRequest>();
+            
             CreateMap<MovieSeasonDto, ChangeSeasonRequest>();
             CreateMap<MovieSeasonEntity, ChangeSeasonRequest>()
                 .ReverseMap();
