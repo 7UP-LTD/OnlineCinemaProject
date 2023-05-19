@@ -79,6 +79,9 @@ namespace OnlineCinema.WebApi
             });
 
             builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+            builder.Services.AddScoped<ITagRepository, TagRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
@@ -89,18 +92,12 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
             builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
             builder.Services.AddTransient<IEpisodeRepository, EpisodeRepository>();
+            builder.Services.AddTransient<IUserManagerResponse, UserManagerResponse>();
+            builder.Services.AddTransient<IOperationResponse, OperationResponse>();
+            builder.Services.AddTransient<IGenreService, GenreService>();
+            builder.Services.AddTransient<ITagService, TagService>();
 
             builder.Services.AddAutoMapper(typeof(MapperConfig));
-
-            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
-            builder.Services.AddScoped<ITagRepository, TagRepository>();
-
-
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserManagerResponse, UserManagerResponse>();
-            builder.Services.AddScoped<IOperationResponse, OperationResponse>();
-            builder.Services.AddScoped<IGenreService, GenreService>();
-            builder.Services.AddScoped<ITagService, TagService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
