@@ -29,7 +29,7 @@ namespace OnlineCinema.Logic.Services.IServices
         /// </summary>
         /// <param name="tagName">Наименование тега.</param>
         /// <returns>Объект ответа с кодом 200 OK и тегом.</returns>
-        Task<ResponseDto> GetTagByName(string tagName);
+        Task<ResponseDto> GetTagByNameAsync(string tagName);
         
         /// <summary>
         /// Создает новый тег.

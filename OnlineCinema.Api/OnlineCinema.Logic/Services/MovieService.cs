@@ -30,7 +30,7 @@ namespace OnlineCinema.Logic.Services
             _tagService = tagService;
         }
 
-        public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter = null)
+        public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
         {
             var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
             var movies = await _movieRepository.GetPagedMovies(page, pageSize, filterEntity);
@@ -59,7 +59,7 @@ namespace OnlineCinema.Logic.Services
             foreach (var tag in listOfTags)
             {
                 Guid? tagEntityId = null;
-                var responseResult = await _tagService.GetTagByName(tag);
+                var responseResult = await _tagService.GetTagByNameAsync(tag);
                 if (responseResult.IsSuccess)
                 {
                     tagEntityId = ((TagDto) responseResult.Result!).Id;
@@ -109,7 +109,7 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = await _movieRepository.GetMovieById(id);
             if (movieEntity == null)
             {
-                // _logger.LogError("Not found movie by id: {Id}", id);
+                _logger.LogError("Not found movie by id: {Id}", id);
                 throw new ArgumentException("Not found");
             }
 
