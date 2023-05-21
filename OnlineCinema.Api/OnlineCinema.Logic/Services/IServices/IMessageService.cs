@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using OnlineCinema.Logic.Helpers;
+using OnlineCinema.Logic.Dtos;
 
 namespace OnlineCinema.Logic.Services.IServices
 {
