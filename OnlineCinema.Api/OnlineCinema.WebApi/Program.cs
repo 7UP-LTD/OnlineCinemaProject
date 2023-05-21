@@ -96,7 +96,6 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IMovieTagRepository, MovieTagRepository>();
             builder.Services.AddTransient<IMovieGenreRepository, MovieGenreRepository>();
             
-            builder.Services.AddTransient<IErrorResponse, ErrorResponse>();
             builder.Services.AddTransient<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddTransient<IOperationResponse, OperationResponse>();
             builder.Services.AddTransient<IGenreService, GenreService>();

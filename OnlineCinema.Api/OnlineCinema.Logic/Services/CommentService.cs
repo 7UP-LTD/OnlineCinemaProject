@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Repositories;
@@ -20,6 +22,7 @@ namespace OnlineCinema.Logic.Services
         private readonly IBaseRepository<MovieEntity> _movieRepository;
         private readonly IMapper _mapper;
         private readonly IOperationResponse _response;
+        private ICommentService _commentServiceImplementation;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса CommentService.

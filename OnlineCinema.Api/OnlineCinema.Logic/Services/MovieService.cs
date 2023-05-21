@@ -9,6 +9,7 @@ using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
+using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Services.IServices;
 
@@ -38,6 +39,22 @@ namespace OnlineCinema.Logic.Services
         {
             var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
             var movies = await _movieRepository.GetPagedMovies(page, pageSize, filterEntity);
+            return _mapper.Map<List<MovieDto>>(movies);
+        }
+        
+        public async Task<MovieMainView> GetMoviesForMain()
+        {
+            // Строка топ 5
+            // Строка Новое
+            // строка Рекомендации
+            // и ещё 3 строки по жанрам. Любые жанры какие хочешь можешь сделать.
+            
+            var filter = new MovieFilter();
+            filter.IsSeries = false;
+            
+            var movies = await _movieRepository.GetPagedMovies(1, 5, filterEntity);
+            var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
+            var movies = await _movieRepository.GetPagedMovies(1, 5, filterEntity);
             return _mapper.Map<List<MovieDto>>(movies);
         }
 

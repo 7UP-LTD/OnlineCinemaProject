@@ -1,4 +1,6 @@
-﻿namespace OnlineCinema.Logic.Dtos.CommentDtos
+﻿using System;
+
+namespace OnlineCinema.Logic.Dtos.CommentDtos
 {
     public class UpdateCommnetDto
     {

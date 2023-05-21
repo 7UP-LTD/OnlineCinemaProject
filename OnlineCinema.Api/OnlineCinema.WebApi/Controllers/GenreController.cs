@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Services.IServices;

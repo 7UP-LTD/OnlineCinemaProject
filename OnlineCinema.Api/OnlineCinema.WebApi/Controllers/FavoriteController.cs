@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Services.IServices;
 using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace OnlineCinema.WebApi.Controllers
 {
