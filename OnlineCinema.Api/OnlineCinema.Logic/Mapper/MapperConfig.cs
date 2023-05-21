@@ -104,9 +104,9 @@ namespace OnlineCinema.Logic.Mapper
 
             #endregion
 
-            #region FavoriteMovieDto/MovieEntity
+            #region ShortInfoMovieDto/MovieEntity
 
-            CreateMap<MovieEntity, FavoriteMovieDto>();
+            CreateMap<MovieEntity, ShortInfoMovieDto>().ReverseMap();
 
             #endregion
         }
