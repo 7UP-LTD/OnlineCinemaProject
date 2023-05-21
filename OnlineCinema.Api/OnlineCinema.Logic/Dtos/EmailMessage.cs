@@ -1,4 +1,4 @@
-﻿namespace OnlineCinema.Logic.Helpers
+﻿namespace OnlineCinema.Logic.Dtos
 {
     /// <summary>
     /// Класс, представляющий сообщение для подтверждения email.

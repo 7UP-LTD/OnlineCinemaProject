@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Logic.Dtos;
 using System.Security.Claims;
+using OnlineCinema.Logic.Services.IServices;
+using System.Net;
+using OnlineCinema.Logic.Dtos.BlobDtos;
 
 namespace OnlineCinema.WebApi.Controllers
 {
@@ -16,6 +19,13 @@ namespace OnlineCinema.WebApi.Controllers
     [Authorize]
     public class TestController : ControllerBase
     {
+        private readonly IBlobService _imageService;
+
+        public TestController(IBlobService imageService)
+        {
+            _imageService = imageService;
+        }
+
         /// <summary>
         /// Проверка получения инфы для авторизованных пользователей.
         /// </summary>
@@ -51,6 +61,25 @@ namespace OnlineCinema.WebApi.Controllers
         public IActionResult ForegetPassword(string email, string token)
         {
             return Ok($"{email}   {token}");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Consumes("multipart/form-data")]
+        [DisableRequestSizeLimit]
+        [ProducesResponseType(typeof(BlobResponseDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Upload(IFormFile image)
+        {
+            var response = await _imageService.UploadFileAsync(image);
+            return Ok(response);
+        }
+
+        [HttpGet("Delete")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Delete([FromQuery] string imageName)
+        {
+            var response = await _imageService.DeleteFileAsync(imageName);
+            return Ok(response);
         }
     }
 }

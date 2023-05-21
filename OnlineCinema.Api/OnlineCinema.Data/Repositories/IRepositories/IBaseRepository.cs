@@ -15,12 +15,11 @@ namespace OnlineCinema.Data.Repositories.IRepositories
         /// Получает список сущностей из контекста данных, удовлетворяющую условиям фильтрации.
         /// </summary>
         /// <param name="filter">Выражение фильтрации.</param>
-        /// <param name="tracked">True, если нужно отслеживать изменения сущности.</param>
         /// <param name="includeProperty">Строка, указывающая, какие свойства навигации должны быть включены в запрос.</param>
         /// <returns>Cписок сущностей из контекста данных, удовлетворяющую условиям фильтрации.</returns>
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null,
-                                         bool tracked = false,
-                                         string? includeProperty = null);
+                                         string? includeProperty = null,
+                                         bool tracked = false);
 
         /// <summary>
         /// Получает сущность из контекста данных, удовлетворяющую условиям фильтрации, или возвращает null, если сущность не найдена.
@@ -32,6 +31,19 @@ namespace OnlineCinema.Data.Repositories.IRepositories
         Task<T?> GetOrDefaultAsync(Expression<Func<T, bool>>? filter = null,
                                    bool tracked = false,
                                    string? includeProperty = null);
+
+        /// <summary>
+        /// Асинхронно получает страницу сущностей с использованием пагинации и фильтрации.
+        /// </summary>
+        /// <param name="filter">Выражение для фильтрации сущностей.</param>
+        /// <param name="includeProperty">Строка, содержащая имена свойств, которые следует включить в запрос.</param>
+        /// <param name="currentPage">Текущая страница.</param>
+        /// <returns>Объект <see cref="PagingEntity"/>, содержащий список сущностей на текущей странице, 
+        /// общее количество сущностей, текущую страницу и количество элементов на странице.</returns>
+        Task<PagingEntity<T>> GetPageEntitiesAsync(Expression<Func<T, bool>>? filter = null,
+                                                   string? includeProperty = null,
+                                                   int currentPage = 1,
+                                                   int tEntityPerPage = 100);
 
         /// <summary>
         /// Добавляет и сохраняет новую сущность в контекст данных.

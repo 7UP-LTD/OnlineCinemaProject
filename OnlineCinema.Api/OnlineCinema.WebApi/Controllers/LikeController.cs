@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Data.Entities;
+using OnlineCinema.Data.Repositories;
+using OnlineCinema.Logic;
+using OnlineCinema.Logic.Dtos;
+using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
 
@@ -17,16 +21,23 @@ namespace OnlineCinema.WebApi.Controllers
     {
         private readonly ILikeService _likeService;
         private readonly UserManager<UserEntity> _userManager;
+        private readonly ILogger<LikeController> _logger;
 
         /// <summary>
         /// Конструктор контроллера лайков к фильмам.
         /// </summary>
         /// <param name="likeService">Сервис для работы с лайками.</param>
         /// <param name="userManager">Менеджер пользователей.</param>
-        public LikeController(ILikeService likeService, UserManager<UserEntity> userManager)
+        /// <param name="logger">Журнал логирования.</param>
+        public LikeController(
+            ILikeService likeService, 
+            UserManager<UserEntity> userManager, 
+            ILogger<LikeController> logger)
         {
             _likeService = likeService;
             _userManager = userManager;
+            _logger = logger;
+
         }
 
         /// <summary>
@@ -57,6 +68,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Ошибка при добавлении лайка на фильм пользователем.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -89,6 +101,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Ошибка при добавлении дизлайка на фильм пользователем.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -101,7 +114,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <response code="204">Лайк удален.</response>
         /// <response code="404">Пользователь или лайк не найдены.</response>
         /// <response code="500">Ошибка на сервере с кодам 500 и описанием ошибки.</response>
-        [HttpGet("Delete/{movieId}")]
+        [HttpDelete("Delete/{movieId}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
@@ -110,7 +123,7 @@ namespace OnlineCinema.WebApi.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                if (user == null)
+                if (user is null)
                     return NotFound("Пользователь не найден.");
 
                 var operationResponse = await _likeService.DeleletLikeAsync(movieId, user.Id);
@@ -121,6 +134,39 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Ошибка при удалении лайка/дизлайка с фильма пользователем.", ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Получает список фильмов, которые понравились пользователю.
+        /// </summary>
+        /// <param name="currentPage">Текущая страница.</param>
+        /// <param name="moviesPerPage">Количество фильмов на странице.</param>
+        /// <returns>Информация о фильмах с пагинацией.</returns>
+        /// <response code="200">Информация о фильмах с пагинацией.</response>
+        /// <response code="404">Пользователь не найдены.</response>
+        /// <response code="500">Ошибка на сервере с кодам 500 и описанием ошибки.</response>
+        [HttpGet("GetMovies")]
+        [ProducesResponseType(typeof(PageDto<ShortInfoMovieDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllUserMovieLikesAsync([FromQuery] int currentPage = 1, 
+                                                                   [FromQuery] int moviesPerPage = 50)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return NotFound("Пользователь не найден.");
+
+                var operationResponse = await _likeService.GetUserLikeMoviesAsync(user.Id, currentPage, moviesPerPage);
+                return Ok(operationResponse.Result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при получении фильмов с лайком на фильмы пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
