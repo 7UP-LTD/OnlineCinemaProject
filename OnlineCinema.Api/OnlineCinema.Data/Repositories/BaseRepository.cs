@@ -33,9 +33,13 @@ namespace OnlineCinema.Data.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null,
-            string? includeProperty = null)
+            string? includeProperty = null,
+            bool tracked = false)
         {
-            IQueryable<T> query = dbSet.AsNoTracking();
+            IQueryable<T> query = dbSet;
+            if (!tracked)
+                query = query.AsNoTracking();
+
             if (includeProperty != null)
                 foreach (var includeProp in includeProperty.Split(',', StringSplitOptions.RemoveEmptyEntries))
                     query = query.Include(includeProp);

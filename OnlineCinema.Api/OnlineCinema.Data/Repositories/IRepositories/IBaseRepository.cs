@@ -18,7 +18,8 @@ namespace OnlineCinema.Data.Repositories.IRepositories
         /// <param name="includeProperty">Строка, указывающая, какие свойства навигации должны быть включены в запрос.</param>
         /// <returns>Cписок сущностей из контекста данных, удовлетворяющую условиям фильтрации.</returns>
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null,
-                                         string? includeProperty = null);
+                                         string? includeProperty = null,
+                                         bool tracked = false);
 
         /// <summary>
         /// Получает сущность из контекста данных, удовлетворяющую условиям фильтрации, или возвращает null, если сущность не найдена.
