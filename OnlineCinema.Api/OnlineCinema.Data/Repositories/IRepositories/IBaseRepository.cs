@@ -37,13 +37,12 @@ namespace OnlineCinema.Data.Repositories.IRepositories
         /// <param name="filter">Выражение для фильтрации сущностей.</param>
         /// <param name="includeProperty">Строка, содержащая имена свойств, которые следует включить в запрос.</param>
         /// <param name="currentPage">Текущая страница.</param>
-        /// <param name="itemsPerPage">Количество элементов на странице.</param>
-        /// <returns>Объект PagingEntity, содержащий список сущностей на текущей странице, 
+        /// <returns>Объект <see cref="PagingEntity"/>, содержащий список сущностей на текущей странице, 
         /// общее количество сущностей, текущую страницу и количество элементов на странице.</returns>
         Task<PagingEntity<T>> GetPageEntitiesAsync(Expression<Func<T, bool>>? filter = null,
-                                                 string? includeProperty = null,
-                                                 int currentPage = 1,
-                                                 int tEntityPerPage = 100);
+                                                   string? includeProperty = null,
+                                                   int currentPage = 1,
+                                                   int tEntityPerPage = 100);
 
         /// <summary>
         /// Добавляет и сохраняет новую сущность в контекст данных.
