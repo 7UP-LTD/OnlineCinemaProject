@@ -54,22 +54,11 @@ namespace OnlineCinema.Logic.Services
         }
         
         /// <inheritdoc/>
-        public async Task<ResponseDto> GetTagByName(string tagName)
+        public async Task<ResponseDto> GetTagByNameAsync(string tagName)
         {
-            var tag = await _tagRepository.GetTagByName( tagName);
+            var tag = await _tagRepository.GetOrDefaultAsync(t => t.Name.ToUpper() == tagName.ToUpper());
             if (tag is null)
                 return _response.NotFound($"Тег с таким ID {tagName} не найден.");
-
-            var tagDto = _mapper.Map<TagDto>(tag);
-            return _response.SuccessResponse(tagDto);
-        }
-        
-        /// <inheritdoc/>
-        public async Task<ResponseDto> GetTagNameAsync(Guid tagId)
-        {
-            var tag = await _tagRepository.GetOrDefaultAsync(t => t.Id == tagId);
-            if (tag is null)
-                return _response.NotFound($"Тег с таким ID {tagId} не найден.");
 
             var tagDto = _mapper.Map<TagDto>(tag);
             return _response.SuccessResponse(tagDto);
