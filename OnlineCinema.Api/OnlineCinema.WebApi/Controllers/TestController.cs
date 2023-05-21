@@ -6,6 +6,8 @@ using System.Security.Claims;
 using OnlineCinema.Logic.Services.IServices;
 using System.Net;
 using OnlineCinema.Logic.Dtos.BlobDtos;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace OnlineCinema.WebApi.Controllers
 {
