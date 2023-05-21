@@ -19,18 +19,22 @@ namespace OnlineCinema.Logic.Services
         private readonly IMapper _mapper;
         private readonly ILogger<MovieService> _logger;
         private readonly IMovieRepository _movieRepository;
+        private readonly IMovieGenreRepository _movieGenreRepository;
+        private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
-            ITagService tagService)
+            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository)
         {
             _mapper = mapper;
             _logger = logger;
             _movieRepository = movieRepository;
             _tagService = tagService;
+            _movieTagRepository = movieTagRepository;
+            _movieGenreRepository = movieGenreRepository;
         }
 
-        public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter = null)
+        public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
         {
             var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
             var movies = await _movieRepository.GetPagedMovies(page, pageSize, filterEntity);
@@ -54,12 +58,42 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = _mapper.Map<MovieEntity>(movie);
             movieEntity.Id = Guid.NewGuid();
             movieEntity.CreatedDate = DateTime.Now;
+            var listOfTagsGuid = await GetTagsGuid(movie);
+            movieEntity.Tags.Clear();
+            foreach (var tagGuid in listOfTagsGuid)
+            {
+                movieEntity.Tags.Add(new MovieTagEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TagId = tagGuid,
+                    MovieId = movieEntity.Id
+                });
+            }
+
+            var listOfGenres = movie.Genres;
+            movieEntity.Genres.Clear();
+            foreach (var genreGuid in listOfGenres)
+            {
+                movieEntity.Genres.Add(new MovieGenreEntity
+                {
+                    Id = Guid.NewGuid(),
+                    DicGenreId = genreGuid,
+                    MovieId = movieEntity.Id
+                });
+            }
+
+            await _movieRepository.AddAsync(movieEntity);
+            return movieEntity.Id;
+        }
+
+        private async Task<List<Guid>> GetTagsGuid(ChangeMovieRequest movie)
+        {
             var listOfTags = movie.Tags;
             var listOfTagsGuid = new List<Guid>();
             foreach (var tag in listOfTags)
             {
                 Guid? tagEntityId = null;
-                var responseResult = await _tagService.GetTagByName(tag);
+                var responseResult = await _tagService.GetTagByNameAsync(tag);
                 if (responseResult.IsSuccess)
                 {
                     tagEntityId = ((TagDto) responseResult.Result!).Id;
@@ -82,26 +116,64 @@ namespace OnlineCinema.Logic.Services
                 }
             }
 
-            foreach (var tagGuid in listOfTagsGuid)
-            {
-                movieEntity.Tags.Add(new MovieTagEntity
-                {
-                    Id = Guid.NewGuid(),
-                    TagId = tagGuid,
-                    MovieId = movieEntity.Id
-                });
-            }
-
-            await _movieRepository.AddAsync(movieEntity);
-            return movieEntity.Id;
+            return listOfTagsGuid;
         }
 
 
         public async Task UpdateMovie(Guid id, ChangeMovieRequest movie)
         {
+            await UpdateMovieProperties(id, movie);
+            await DeleteMovieCollections(id);
+            await AddMovieCollections(id, movie);
+        }
+
+        private async Task AddMovieCollections(Guid id, ChangeMovieRequest movie)
+        {
+            var listOfTagsGuid = await GetTagsGuid(movie);
+            foreach (var tagGuid in listOfTagsGuid)
+            {
+                await _movieTagRepository.AddAsync(new MovieTagEntity
+                {
+                    Id = Guid.NewGuid(),
+                    TagId = tagGuid,
+                    MovieId = id
+                });
+            }
+
+            var listOfGenres = movie.Genres;
+            foreach (var genreGuid in listOfGenres)
+            {
+                await _movieGenreRepository.AddAsync(new MovieGenreEntity
+                {
+                    Id = Guid.NewGuid(),
+                    DicGenreId = genreGuid,
+                    MovieId = id
+                });
+            }
+        }
+
+        private async Task UpdateMovieProperties(Guid id, ChangeMovieRequest movie)
+        {
             var movieEntity = await _movieRepository.GetMovieById(id);
             _mapper.Map(movie, movieEntity);
-            await _movieRepository.UpdateMovie(id, movieEntity);
+            await _movieRepository.UpdateAsync(movieEntity);
+        }
+
+        private async Task DeleteMovieCollections(Guid id)
+        {
+            var genres = await _movieGenreRepository
+                .GetAllAsync(x => x.MovieId == id, true);
+            foreach (var genre in genres)
+            {
+                await _movieGenreRepository.DeleteAsync(genre);
+            }
+
+            var tags = await _movieTagRepository
+                .GetAllAsync(x => x.MovieId == id, true);
+            foreach (var tag in tags)
+            {
+                await _movieTagRepository.DeleteAsync(tag);
+            }
         }
 
         public async Task DeleteMovie(Guid id)
@@ -109,11 +181,11 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = await _movieRepository.GetMovieById(id);
             if (movieEntity == null)
             {
-                // _logger.LogError("Not found movie by id: {Id}", id);
+                _logger.LogError("Not found movie by id: {Id}", id);
                 throw new ArgumentException("Not found");
             }
 
-            _movieRepository.DeleteAsync(movieEntity);
+            await _movieRepository.DeleteAsync(movieEntity);
         }
     }
 }
