@@ -8,7 +8,7 @@ namespace OnlineCinema.Data.Entities
         public string Name { get; set; }
 
         public string? Description { get; set; }
-        
+
         /// <summary>
         /// год выпуска фильма
         /// </summary>
@@ -25,27 +25,32 @@ namespace OnlineCinema.Data.Entities
         public bool IsSeries { get; set; }
 
         public string? ContentUrl { get; set; }
-        
+
         public Guid CountryId { get; set; }
-        
+
         public DicCountryEntity Country { get; set; }
-        
+
         public int AgeLimit { get; set; }
 
         public int Duration { get; set; }
         public List<MovieSeasonEntity> Seasons { get; set; } = new();
-        
+
         public List<MovieCommentEntity> Comments { get; set; } = new();
-        
+
         public List<MovieGenreEntity> Genres { get; set; } = new();
-       
+
         public List<MovieTagEntity> Tags { get; set; } = new();
-        
+
         public List<MovieActorEntity> Actors { get; set; } = new();
-        
+
         public List<MovieDirectorEntity> Directors { get; set; } = new();
-        
+
         public List<MovieWriterEntity> Writers { get; set; } = new();
-        
+
+        public virtual List<UserMovieLikeEntity> UserMovieLikes { get; set; } = new();
+
+        public virtual List<UserFavoriteMovieEntity> UserFavorites { get; set; } = new();
+
+        public virtual List<UserMovieViewedEntity> UserMoviesViewed { get; set; } = new();
     }
 }
