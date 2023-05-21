@@ -114,9 +114,6 @@ namespace OnlineCinema.Logic.Services
             if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 return _managerResponse.EntryDenied(new List<string> { "Неверный пароль." });
 
-            if (!user.EmailConfirmed)
-                return _managerResponse.EntryDenied(new List<string> { $"Подтвердите электронную почту пользователя {user.Email} для входа." });
-
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email!),

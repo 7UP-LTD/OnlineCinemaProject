@@ -179,14 +179,14 @@ namespace OnlineCinema.Logic.Services
         private async Task DeleteMovieCollections(Guid id)
         {
             var genres = await _movieGenreRepository
-                .GetAllAsync(x => x.MovieId == id, true);
+                .GetAllAsync(x => x.MovieId == id, tracked: true);
             foreach (var genre in genres)
             {
                 await _movieGenreRepository.DeleteAsync(genre);
             }
 
             var tags = await _movieTagRepository
-                .GetAllAsync(x => x.MovieId == id, true);
+                .GetAllAsync(x => x.MovieId == id, tracked: true);
             foreach (var tag in tags)
             {
                 await _movieTagRepository.DeleteAsync(tag);

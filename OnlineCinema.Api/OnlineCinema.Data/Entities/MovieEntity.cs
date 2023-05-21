@@ -29,11 +29,11 @@ namespace OnlineCinema.Data.Entities
         public bool IsSeries { get; set; }
 
         public string? ContentUrl { get; set; }
-
+        
         public Guid CountryId { get; set; }
-
+        
         public DicCountryEntity Country { get; set; }
-
+        
         public int AgeLimit { get; set; }
 
         public int Duration { get; set; }
@@ -50,6 +50,12 @@ namespace OnlineCinema.Data.Entities
         public List<MovieDirectorEntity> Directors { get; set; } = new();
 
         public List<MovieWriterEntity> Writers { get; set; } = new();
+
+        public virtual List<UserMovieLikeEntity> UserMovieLikes { get; set; } = new();
+
+        public virtual List<UserFavoriteMovieEntity> UserFavorites { get; set; } = new();
+
+        public virtual List<UserMovieViewedEntity> UserMoviesViewed { get; set; } = new();
         
         public List<ImageEntity> Images { get; set; } = new();
     }

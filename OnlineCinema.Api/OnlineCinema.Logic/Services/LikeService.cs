@@ -1,8 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Azure.Storage.Blobs.Models;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
+using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
 
@@ -15,6 +16,7 @@ namespace OnlineCinema.Logic.Services
     {
         private readonly IBaseRepository<UserMovieLikeEntity> _likeRepository;
         private readonly IBaseRepository<MovieEntity> _movieRepository;
+        private readonly IMapper _mapper;
         private readonly IOperationResponse _response;
 
         /// <summary>
@@ -26,11 +28,13 @@ namespace OnlineCinema.Logic.Services
         public LikeService(
             IBaseRepository<UserMovieLikeEntity> likeRepository,
             IOperationResponse response,
-            IBaseRepository<MovieEntity> movieRepository)
+            IBaseRepository<MovieEntity> movieRepository,
+            IMapper mapper)
         {
             _likeRepository = likeRepository;
             _response = response;
             _movieRepository = movieRepository;
+            _mapper = mapper;
         }
 
         /// <inheritdoc/>
@@ -56,7 +60,8 @@ namespace OnlineCinema.Logic.Services
             {
                 MovieId = movieId,
                 UserId = userId,
-                isLike = false
+                isLike = false,
+                CreatedDate = DateTime.Now
             };
 
             await _likeRepository.AddAsync(userMovieLike);
@@ -86,7 +91,8 @@ namespace OnlineCinema.Logic.Services
             {
                 MovieId = movieId,
                 UserId = userId,
-                isLike = true
+                isLike = true,
+                CreatedDate = DateTime.Now
             };
 
             await _likeRepository.AddAsync(userMovieLike);
@@ -103,6 +109,24 @@ namespace OnlineCinema.Logic.Services
 
             await _likeRepository.DeleteAsync(userMovieLike);
             return _response.DeleteSuccessfully();
+        }
+
+        /// <inheritdoc/>
+        public async Task<ResponseDto> GetUserLikeMoviesAsync(Guid userId, int currentPage, int moviesPerPage)
+        {
+            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserMovieLikes.All(u => u.UserId == userId && u.isLike),
+                                                                          currentPage: currentPage,
+                                                                          tEntityPerPage: moviesPerPage,
+                                                                          includeProperty: "UserMovieLikes");
+            var pagingInfoDto = new PageDto<ShortInfoMovieDto>
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = moviesPerPage,
+                TotalItems = tEntityPage.TotalTEntity,
+                Items = _mapper.Map<IEnumerable<ShortInfoMovieDto>>(tEntityPage.TEntities)
+            };
+
+            return _response.SuccessResponse(pagingInfoDto);
         }
     }
 }

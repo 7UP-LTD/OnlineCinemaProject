@@ -50,8 +50,10 @@ namespace OnlineCinema.Logic.Services
             var userFavoriteMovie = new UserFavoriteMovieEntity
             {
                 UserId = userId,
-                MovieId = movieId
+                MovieId = movieId,
+                CreatedDate = DateTime.Now,
             };
+
             await _favoriteRepository.AddAsync(userFavoriteMovie);
             return _response.CreatedSuccessfully(userFavoriteMovie.Id);
         }
@@ -68,16 +70,21 @@ namespace OnlineCinema.Logic.Services
             return _response.DeleteSuccessfully();
         }
 
-        public async Task<ResponseDto> GetAllUserFavoriteMoviesAsync(Guid userId)
+        public async Task<ResponseDto> GetAllUserFavoriteMoviesAsync(Guid userId, int currentPage, int moviesPerPage)
         {
-            var favoriteMovies = await _favoriteRepository.GetAllAsync(f => f.UserId == userId, 
-                                                                       includeProperty: "MovieEntity");
-            if (favoriteMovies is null)
-                return _response.NotFound("Избранные фильмы у пользователя не найдены.");
+            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserFavorites.All(u => u.UserId == userId),
+                                                                          currentPage: currentPage,
+                                                                          tEntityPerPage: moviesPerPage,
+                                                                          includeProperty: "UserFavorites");
+            var pagingInfoDto = new PageDto<ShortInfoMovieDto>
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = moviesPerPage,
+                TotalItems = tEntityPage.TotalTEntity,
+                Items = _mapper.Map<IEnumerable<ShortInfoMovieDto>>(tEntityPage.TEntities)
+            };
 
-            var movies = favoriteMovies.Select(favoriteMovies => favoriteMovies.Movie).ToList();
-            var favoriteMovieDtos = _mapper.Map<List<FavoriteMovieDto>>(movies);
-            return _response.SuccessResponse(favoriteMovieDtos);
+            return _response.SuccessResponse(pagingInfoDto);
         }
     }
 }

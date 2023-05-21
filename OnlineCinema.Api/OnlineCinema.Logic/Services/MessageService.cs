@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using OnlineCinema.Logic.Helpers;
+using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Services.IServices;
 
 namespace OnlineCinema.Logic.Services

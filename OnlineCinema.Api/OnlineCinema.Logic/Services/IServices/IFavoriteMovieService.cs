@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using OnlineCinema.Logic.Dtos;
+﻿using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 
 namespace OnlineCinema.Logic.Services.IServices
@@ -11,12 +9,13 @@ namespace OnlineCinema.Logic.Services.IServices
     public interface IFavoriteMovieService
     {
         /// <summary>
-        /// Получить список всех избранных фильмов пользователя.
+        /// Получает все любимые фильмы пользователя.
         /// </summary>
-        /// <param name="userId">ID пользователя.</param>
-        /// <returns>Ответ об успешности операции со списоком 
-        /// избранных фильмов пользователя экземпляра см. <see cref="FavoriteMovieDto"/>.</returns>
-        Task<ResponseDto> GetAllUserFavoriteMoviesAsync(Guid userId);
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="currentPage">Текущая страница.</param>
+        /// <param name="moviesPerPage">Количество фильмов на странице.</param>
+        /// <returns>Задача, возвращающая объект <see cref="ResponseDto"/>.</returns>
+        Task<ResponseDto> GetAllUserFavoriteMoviesAsync(Guid userId, int currentPage, int moviesPerPage);
 
         /// <summary>
         /// Добавить фильм в избранное пользователя.

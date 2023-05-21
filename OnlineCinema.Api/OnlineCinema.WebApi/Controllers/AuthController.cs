@@ -23,18 +23,22 @@ namespace OnlineCinema.WebApi.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthController> _logger;
 
         /// <summary>
         /// Конструктор контроллера аутентификации.
         /// </summary>
         /// <param name="authService">Сервис аутентификации.</param>
         /// <param name="configuration">Конфигурация.</param>
+        ///  <param name="logger">Журнал логирования.</param>
         public AuthController(
             IAuthService authService, 
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ILogger<AuthController> logger)
         {
             _authService = authService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         /// <summary>
@@ -68,7 +72,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Добавить жернал логгирования. Ещё бы вспомнить как один раз только делал.
+                _logger.LogError(ex, "Ошибка при регистрации пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -104,7 +108,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Добавить жернал логгирования
+                _logger.LogError(ex, "Ошибка при подтверждении почты пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -140,7 +144,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Добавить жернал логгирования
+                _logger.LogError(ex, "Ошибка при входе в учетную запись пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -175,7 +179,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                //TODO: Добавить жернал логгирования
+                _logger.LogError(ex, "Ошибка при запросе на сброс пароля пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -211,7 +215,7 @@ namespace OnlineCinema.WebApi.Controllers
             }
             catch(Exception ex)
             {
-                //TODO: Добавить жернал логгирования
+                _logger.LogError(ex, "Ошибка при смене пароля пользователя.", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

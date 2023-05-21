@@ -33,7 +33,16 @@ namespace OnlineCinema.Logic.Services.IServices
         /// </summary>
         /// <param name="movieId">Идентификатор фильма.</param>
         /// <param name="userId">Идентификатор пользователя.</param>
-        /// <returns>Объект ResponseDto с результатом операции.</returns>
+        /// <returns>Объект <see cref="ResponseDto"/> с результатом операции.</returns>
         Task<ResponseDto> DeleletLikeAsync(Guid movieId, Guid userId);
+
+        /// <summary>
+        /// Асинхронно получает список фильмов, которые понравились пользователю, с использованием пагинации.
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <param name="currentPage">Текущая страница.</param>
+        /// <param name="moviesPerPage">Количество фильмов на странице.</param>
+        /// <returns>Объект <see cref="ResponseDto"/> с результатом запроса.</returns>
+        Task<ResponseDto> GetUserLikeMoviesAsync(Guid userId, int currentPage, int moviesPerPage);
     }
 }

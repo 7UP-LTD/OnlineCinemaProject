@@ -33,7 +33,7 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", ApiDescriptor.GetApiInfo(builder.Configuration));
@@ -49,8 +49,8 @@ namespace OnlineCinema.WebApi
                     config.Password.RequireUppercase = false;
                     config.Password.RequireLowercase = false;
                     config.Password.RequireNonAlphanumeric = false;
-                }).AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -88,7 +88,12 @@ namespace OnlineCinema.WebApi
             builder.Services.AddTransient<IMovieService, MovieService>();
             builder.Services.AddTransient<ISeasonService, SeasonService>();
             builder.Services.AddTransient<IEpisodeService, EpisodeService>();
-           
+
+            builder.Services.AddTransient<IBlobService, BlobService>();
+            builder.Services.AddTransient<ILikeService, LikeService>();
+            builder.Services.AddTransient<IFavoriteMovieService, FavoriteMovieService>();
+            builder.Services.AddTransient<IViewedService, ViewedService>();
+
             builder.Services.AddTransient<IMovieRepository, MovieRepository>();
             builder.Services.AddTransient<ISeasonRepository, SeasonRepository>();
             builder.Services.AddTransient<IEpisodeRepository, EpisodeRepository>();

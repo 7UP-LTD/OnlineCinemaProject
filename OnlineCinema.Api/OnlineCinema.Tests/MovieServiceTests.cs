@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
-using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
@@ -30,8 +29,11 @@ namespace OnlineCinema.Tests
         private readonly ILogger<MovieService> _logger;
         private MovieRepository _movieRepository;
         private TagRepository _tagRepository;
-        private TagService _tagService;
+        private ITagService _tagService;
+        private readonly IMovieTagRepository _movieTagRepository;
         private readonly IOperationResponse _response;
+        private readonly IMovieGenreRepository _movieGenreRepository;
+        
         private IMovieTagRepository _movieTagRepository;
         private IMovieGenreRepository _movieGenreRepository;
 
@@ -47,6 +49,7 @@ namespace OnlineCinema.Tests
             _movieService = new MovieService(_mapper, _logger, _movieRepository,
                 _tagService, _movieTagRepository, _movieGenreRepository);
 
+            _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService, _movieTagRepository, _movieGenreRepository);
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 
@@ -135,7 +138,7 @@ namespace OnlineCinema.Tests
             });
             if (ex != null) Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'logger')"));
         }
-
+        
         [Test]
         public async Task UpdateWithTag_ShouldUpdateMovieById()
         {
@@ -148,7 +151,7 @@ namespace OnlineCinema.Tests
                 ContentUrl = "//ContentUrl"
             });
 
-
+            
             var movieDto = await _movieService.GetMovieById(movieId);
 
             movieDto.Name = "Film Edited";
@@ -158,5 +161,6 @@ namespace OnlineCinema.Tests
             var result = await _movieService.GetMovieById(movieId);
             Assert.That(result.Name, Is.EqualTo("Film Edited"));
         }
+
     }
 }
