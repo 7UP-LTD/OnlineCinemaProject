@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OnlineCinema.Data.Constans;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Response.IResponse;
@@ -26,6 +27,7 @@ namespace OnlineCinema.Logic.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<UserEntity> _userManager;
+        private readonly RoleManager<RoleEntity> _roleManager;
         private readonly IUserManagerResponse _managerResponse;
         private readonly IConfiguration _configuration;
         private readonly IMessageService _message;
@@ -43,6 +45,7 @@ namespace OnlineCinema.Logic.Services
         /// <param name="managerResponse">Ответ от менеджера пользователей.</param>
         public AuthService(
             UserManager<UserEntity> userManager,
+            RoleManager<RoleEntity> roleManager,
             IMapper mapper, 
             IConfiguration configuration, 
             IMessageService message, 
@@ -55,6 +58,7 @@ namespace OnlineCinema.Logic.Services
             _message = message;
             _emailService = emailService;
             _managerResponse = managerResponse;
+            _roleManager = roleManager;
         }
 
         /// <inheritdoc/>
@@ -138,6 +142,7 @@ namespace OnlineCinema.Logic.Services
             var result = await _userManager.CreateAsync(userEntity, model.Password);
             if (result.Succeeded)
             {
+                await AddRoleToUserAsync(userEntity);
                 var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
@@ -233,6 +238,32 @@ namespace OnlineCinema.Logic.Services
                 return _managerResponse.ResetPasswordSuccessfully();
 
             return _managerResponse.ResetPasswordFailed(result.Errors.Select(e => e.Description).ToList());
+        }
+
+        /// <summary>
+        /// Метод который устанавливает роли пользователям. Если роль Админ не существует, то он создает две роли по умолчанию (Админ и Юзер).
+        /// </summary>
+        /// <param name="user">Пользователь которому надо добавить роль.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">Если возникла ошибка при добавлении роли.</exception>
+        private async Task AddRoleToUserAsync(UserEntity user)
+        {
+            try
+            {
+                if (!await _roleManager.RoleExistsAsync(Role.Admin))
+                {
+                    await _roleManager.CreateAsync(new RoleEntity { Name = Role.Admin });
+                    await _roleManager.CreateAsync(new RoleEntity { Name = Role.User });
+                    await _userManager.AddToRoleAsync(user, Role.Admin);
+                    return;
+                }
+
+                await _userManager.AddToRoleAsync(user, Role.User);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Не удалось назначить роль пользователю.", ex);
+            }
         }
     }
 }
