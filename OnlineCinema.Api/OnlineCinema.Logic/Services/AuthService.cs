@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using OnlineCinema.Data.Constans;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Response.IResponse;
@@ -26,6 +27,7 @@ namespace OnlineCinema.Logic.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<UserEntity> _userManager;
+        private readonly RoleManager<RoleEntity> _roleManager;
         private readonly IUserManagerResponse _managerResponse;
         private readonly IConfiguration _configuration;
         private readonly IMessageService _message;
@@ -43,6 +45,7 @@ namespace OnlineCinema.Logic.Services
         /// <param name="managerResponse">Ответ от менеджера пользователей.</param>
         public AuthService(
             UserManager<UserEntity> userManager,
+            RoleManager<RoleEntity> roleManager,
             IMapper mapper, 
             IConfiguration configuration, 
             IMessageService message, 
@@ -55,6 +58,7 @@ namespace OnlineCinema.Logic.Services
             _message = message;
             _emailService = emailService;
             _managerResponse = managerResponse;
+            _roleManager = roleManager;
         }
 
         /// <inheritdoc/>
@@ -68,11 +72,16 @@ namespace OnlineCinema.Logic.Services
         public async Task<UserManagerDto> GoogleExternalLoginAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if (_userManager.GetRolesAsync(user!).GetAwaiter().GetResult().Count == 0)
+                await AddRoleToUserAsync(user!);
+
+            var roles = await _userManager.GetRolesAsync(user!);
             var userClaims = new[]
             {
                 new Claim(ClaimTypes.Email, user!.Email!),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName!)
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Role, roles.FirstOrDefault()!)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
@@ -102,13 +111,17 @@ namespace OnlineCinema.Logic.Services
             if (!result.Succeeded)
                 return _managerResponse.EntryDenied(new List<string> { "Не удалось зарегестрировать пользователя." });
 
+            await AddRoleToUserAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email!),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName!)
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Role, roles.FirstOrDefault()!)
             };
 
+            await SendConfirmationEmailAsync(user);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -138,12 +151,8 @@ namespace OnlineCinema.Logic.Services
             var result = await _userManager.CreateAsync(userEntity, model.Password);
             if (result.Succeeded)
             {
-                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
-                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
-                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-                var confirmationLink = $"{_configuration["AppUrl"]}/api/auth/confirmemail?userid={userEntity.Id}&token={validEmailToken}&redirecturl={model.ConfirmRedirectUrl}";
-                var message = await _message.GetConfirmationEmailHtmlAsync(confirmationLink);
-                await _emailService.SendEmailAsync(userEntity.Email!, message.Subject, message.HtmlMessage);
+                await AddRoleToUserAsync(userEntity);
+                await SendConfirmationEmailAsync(userEntity, model);
                 return _managerResponse.UserRegisterSuccessfully();
             }
 
@@ -151,6 +160,16 @@ namespace OnlineCinema.Logic.Services
                 return _managerResponse.DublicateEmail(userEntity.Email!);
 
             return _managerResponse.UserRegisterFailed(result.Errors.Select(e => e.Description).ToList());
+        }
+
+        private async Task SendConfirmationEmailAsync(UserEntity userEntity, RegisterUserDto? model = null)
+        {
+            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
+            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+            var confirmationLink = $"{_configuration["AppUrl"]}/api/auth/confirmemail?userid={userEntity.Id}&token={validEmailToken}&redirecturl={model?.ConfirmRedirectUrl}";
+            var message = await _message.GetConfirmationEmailHtmlAsync(confirmationLink);
+            await _emailService.SendEmailAsync(userEntity.Email!, message.Subject, message.HtmlMessage);
         }
 
         /// <inheritdoc/>
@@ -181,6 +200,9 @@ namespace OnlineCinema.Logic.Services
 
             if (!await _userManager.CheckPasswordAsync(user, model.Password))
                 return _managerResponse.EntryDenied(new List<string> { "Неверный пароль." });
+
+            if (_userManager.GetRolesAsync(user).GetAwaiter().GetResult().Count == 0)
+                await AddRoleToUserAsync(user);
 
             var claims = new[]
             {
@@ -233,6 +255,32 @@ namespace OnlineCinema.Logic.Services
                 return _managerResponse.ResetPasswordSuccessfully();
 
             return _managerResponse.ResetPasswordFailed(result.Errors.Select(e => e.Description).ToList());
+        }
+
+        /// <summary>
+        /// Метод который устанавливает роли пользователям. Если роль Админ не существует, то он создает две роли по умолчанию (Админ и Юзер).
+        /// </summary>
+        /// <param name="user">Пользователь которому надо добавить роль.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">Если возникла ошибка при добавлении роли.</exception>
+        private async Task AddRoleToUserAsync(UserEntity user)
+        {
+            try
+            {
+                if (!_roleManager.RoleExistsAsync(Role.Admin).GetAwaiter().GetResult())
+                {
+                    await _roleManager.CreateAsync(new RoleEntity { Name = Role.Admin });
+                    await _roleManager.CreateAsync(new RoleEntity { Name = Role.User });
+                    await _userManager.AddToRoleAsync(user, Role.Admin);
+                    return;
+                }
+
+                await _userManager.AddToRoleAsync(user, Role.User);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Не удалось назначить роль пользователю.", ex);
+            }
         }
     }
 }
