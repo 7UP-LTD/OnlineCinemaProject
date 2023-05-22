@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
+using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
@@ -33,9 +34,7 @@ namespace OnlineCinema.Tests
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly IOperationResponse _response;
         private readonly IMovieGenreRepository _movieGenreRepository;
-        
-        private IMovieTagRepository _movieTagRepository;
-        private IMovieGenreRepository _movieGenreRepository;
+    
 
         [SetUp]
         public void SetUp()
@@ -48,7 +47,7 @@ namespace OnlineCinema.Tests
             _tagRepository = new TagRepository(_appDbContext);
             _movieService = new MovieService(_mapper, _logger, _movieRepository,
                 _tagService, _movieTagRepository, _movieGenreRepository);
-
+        
             _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService, _movieTagRepository, _movieGenreRepository);
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
