@@ -8,6 +8,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using OnlineCinema.Logic.Dtos.BlobDtos;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace OnlineCinema.WebApi.Controllers
 {
