@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
+using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
+using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Services.IServices;
 
@@ -22,6 +24,7 @@ namespace OnlineCinema.Logic.Services
         private readonly IMovieGenreRepository _movieGenreRepository;
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
+
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
             ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository)
@@ -39,6 +42,47 @@ namespace OnlineCinema.Logic.Services
             var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
             var movies = await _movieRepository.GetPagedMovies(page, pageSize, filterEntity);
             return _mapper.Map<List<MovieDto>>(movies);
+        }
+
+        public async Task<MovieMainView> GetMoviesForMain(Guid? userId)
+        {
+            var numberOfMovie = 5;
+            var mainModelView = new MovieMainView();
+            var filter = new MovieEntityFilter();
+            filter.IsSeries = false;
+
+            var newMovies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+            mainModelView.NewMovies = _mapper.Map<List<MovieView>>(newMovies);
+
+            var topMovies = await _movieRepository.GetTopMovies(numberOfMovie, null);
+            mainModelView.TopMovies = _mapper.Map<List<MovieView>>(topMovies);
+            mainModelView.Banners = topMovies.Select(b => b.MovieBannerUrl).ToList();
+
+            if (userId != null)
+            {
+                var recommendedMovies = await _movieRepository.GetTopMovies(numberOfMovie, userId);
+                mainModelView.recommendedMovies = _mapper.Map<List<MovieView>>(recommendedMovies);
+            }
+
+            var useGenres = await _movieRepository.GetTopGenres(numberOfMovie);
+            foreach (var genre in useGenres)
+            {
+                if (filter.Genres != null)
+                {
+                    filter.Genres.Clear();
+                    filter.Genres?.Add(genre);
+                }
+
+                var movies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+                var moviesView = new GenreMovies();
+                moviesView.Movies = _mapper.Map<List<MovieView>>(movies);
+                moviesView.Genre = _mapper.Map<GenreDto>(genre);
+                var listMovies = new List<GenreMovies>();
+                listMovies.Add(moviesView);
+                mainModelView.GenreMovies = listMovies;
+            }
+
+            return mainModelView;
         }
 
         public async Task<MovieDto> GetMovieById(Guid id)
@@ -156,7 +200,7 @@ namespace OnlineCinema.Logic.Services
         {
             var movieEntity = await _movieRepository.GetMovieById(id);
             _mapper.Map(movie, movieEntity);
-            await _movieRepository.UpdateAsync(movieEntity);
+            if (movieEntity != null) await _movieRepository.UpdateAsync(movieEntity);
         }
 
         private async Task DeleteMovieCollections(Guid id)

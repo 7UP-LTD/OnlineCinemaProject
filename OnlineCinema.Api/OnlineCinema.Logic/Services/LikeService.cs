@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using Azure.Storage.Blobs.Models;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Repositories.IRepositories;

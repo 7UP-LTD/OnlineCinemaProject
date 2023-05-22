@@ -19,6 +19,10 @@ namespace OnlineCinema.Data.Entities
         /// </summary>
         public string MoviePosterUrl { get; set; }
 
+        public string MovieBannerUrl { get; set; }
+
+        //public Guid BannerFileId { get; set; }
+
         /// <summary>
         /// сериал или нет
         /// </summary>

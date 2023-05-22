@@ -8,6 +8,7 @@ using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.CommentDto;
+using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
 
 namespace OnlineCinema.Logic.Mapper
 {
@@ -65,6 +66,10 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<ChangeEpisodeRequest, MovieEpisodeEntity>();
             CreateMap<MovieEpisodeEntity, MovieEpisodeDto>()
                 .ReverseMap();
+
+            CreateMap<MovieEntity, MovieView>();
+            CreateMap<MovieEntity, GenreMovies>();
+            CreateMap<DicGenreEntity, GenreDto>();
           
             #endregion
 

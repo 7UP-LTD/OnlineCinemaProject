@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
+using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
 using OnlineCinema.Logic.Models;
 
 namespace OnlineCinema.Logic.Services.IServices
@@ -47,5 +48,12 @@ namespace OnlineCinema.Logic.Services.IServices
         /// </summary>
         /// <param name="id">Идентификатор фильма</param>
         Task DeleteMovie(Guid id);
+
+        /// <summary>
+        /// Получение данных для главной страницы
+        /// </summary>
+        /// <param name="userId">Идентификатор пользователя</param>
+        /// <returns></returns>
+        Task<MovieMainView> GetMoviesForMain(Guid? userId);
     }
 }
