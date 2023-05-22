@@ -24,11 +24,10 @@ namespace OnlineCinema.Logic.Services
         private readonly IMovieGenreRepository _movieGenreRepository;
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
-        private readonly IGenreRepository _genreRepository;
+
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
-            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository,
-            IGenreRepository genreRepository)
+            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository)
         {
             _mapper = mapper;
             _logger = logger;
@@ -36,7 +35,6 @@ namespace OnlineCinema.Logic.Services
             _tagService = tagService;
             _movieTagRepository = movieTagRepository;
             _movieGenreRepository = movieGenreRepository;
-            _genreRepository = genreRepository;
         }
 
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
@@ -52,45 +50,39 @@ namespace OnlineCinema.Logic.Services
             var mainModelView = new MovieMainView();
             var filter = new MovieEntityFilter();
             filter.IsSeries = false;
-            var newMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+
+            var newMovies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
             mainModelView.NewMovies = _mapper.Map<List<MovieView>>(newMovies);
 
-            //TODO сделать метод выборки топ 5
-            var topMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+            var topMovies = await _movieRepository.GetTopMovies(numberOfMovie, null);
             mainModelView.TopMovies = _mapper.Map<List<MovieView>>(topMovies);
+            mainModelView.Banners = topMovies.Select(b => b.MovieBannerUrl).ToList();
 
-            //TODO сделать метод выборки по пользователю
             if (userId != null)
             {
-                //GetAllUserMovieLikesAsync
-                var recommendedMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+                var recommendedMovies = await _movieRepository.GetTopMovies(numberOfMovie, userId);
                 mainModelView.recommendedMovies = _mapper.Map<List<MovieView>>(recommendedMovies);
             }
 
-            var useGenres = await GetGenre(3);
+            var useGenres = await _movieRepository.GetTopGenres(numberOfMovie);
             foreach (var genre in useGenres)
             {
                 if (filter.Genres != null)
                 {
                     filter.Genres.Clear();
-                    filter.Genres?.Add(genre.Id);
+                    filter.Genres?.Add(genre);
                 }
+
                 var movies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
-                var moviesView = _mapper.Map<GenreMovies>(movies);
+                var moviesView = new GenreMovies();
+                moviesView.Movies = _mapper.Map<List<MovieView>>(movies);
                 moviesView.Genre = _mapper.Map<GenreDto>(genre);
                 var listMovies = new List<GenreMovies>();
                 listMovies.Add(moviesView);
                 mainModelView.GenreMovies = listMovies;
             }
-            
-            return mainModelView;
-        }
 
-        private async Task<List<DicGenreEntity>> GetGenre(int numberOfGenres)
-        {
-            var genres = await _genreRepository.GetAllAsync();
-            var genreList = genres.Take(numberOfGenres).ToList();
-            return genreList;
+            return mainModelView;
         }
 
         public async Task<MovieDto> GetMovieById(Guid id)
@@ -208,7 +200,7 @@ namespace OnlineCinema.Logic.Services
         {
             var movieEntity = await _movieRepository.GetMovieById(id);
             _mapper.Map(movie, movieEntity);
-            await _movieRepository.UpdateAsync(movieEntity);
+            if (movieEntity != null) await _movieRepository.UpdateAsync(movieEntity);
         }
 
         private async Task DeleteMovieCollections(Guid id)

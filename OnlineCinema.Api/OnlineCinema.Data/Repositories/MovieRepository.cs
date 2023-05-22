@@ -73,5 +73,70 @@ namespace OnlineCinema.Data.Repositories
 
             return await query.ToListAsync();
         }
+
+        public async Task<List<Guid>> GetTopGenres(int topRows)
+        {
+            return await _context.UserMovieLikes
+                .Include(x => x.Movie)
+                .ThenInclude(x => x.Genres)
+                .Where(x => x.isLike)
+                .Select(x => new
+                {
+                    x.isLike,
+                    GenreId = x.Movie.Genres.FirstOrDefault().DicGenreId
+                })
+                .GroupBy(x => x.GenreId)
+                .Select(g => new
+                {
+                    GenreId = g.Key,
+                    LikesCount = g.Count()
+                })
+                .OrderByDescending(x => x.LikesCount)
+                .Take(topRows)
+                .Select(x => x.GenreId)
+                .ToListAsync();
+        }
+
+        public async Task<List<MovieEntity>> GetTopMovies(int topRows, Guid? genreId)
+        {
+            return await _context.UserMovieLikes
+                .Include(x => x.Movie)
+                .Where(x => x.isLike
+                            && (!genreId.HasValue
+                                || x.Movie.Genres.Select(g => g.DicGenreId).Contains(genreId.Value)
+                            )
+                )
+                .GroupBy(x => x.Movie)
+                .Select(g => new
+                {
+                    Movie = g.Key,
+                    LikesCount = g.Count()
+                })
+                .OrderByDescending(x => x.LikesCount)
+                .Take(topRows)
+                .Select(x => x.Movie)
+                .ToListAsync();
+        }
+
+        public async Task<List<MovieEntity>> GetTopUserMovies(Guid userId, int topRows)
+        {
+            return await _context.UserMovieLikes
+                .Include(x => x.Movie)
+                .ThenInclude(x => x.Genres)
+                .Where(x =>
+                    x.UserId == userId
+                    && x.isLike
+                )
+                .GroupBy(x => x.Movie)
+                .Select(g => new
+                {
+                    Movie = g.Key,
+                    LikesCount = g.Count()
+                })
+                .OrderByDescending(x => x.LikesCount)
+                .Take(topRows)
+                .Select(x => x.Movie)
+                .ToListAsync();
+        }
     }
 }
