@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos.AuthDtos;
 
 namespace OnlineCinema.Logic.Services.IServices
@@ -7,7 +9,7 @@ namespace OnlineCinema.Logic.Services.IServices
     /// <summary>
     /// Интерфейс сервиса аутентификации и авторизации.
     /// </summary>
-    public interface IAuthService 
+    public interface IAuthService
     {
         /// <summary>
         /// Регистрация нового пользователя.
@@ -45,5 +47,26 @@ namespace OnlineCinema.Logic.Services.IServices
         /// <param name="model">DTO для сброса пароля.</param>
         /// <returns>Ответ менеджера пользователя.</returns>
         Task<UserManagerDto> ResetPasswordAsync(ResetPasswordDto model);
+
+        /// <summary>
+        /// Проверяет, существует ли пользователь с указанным электронным адресом.
+        /// </summary>
+        /// <param name="email">Электронный адрес пользователя.</param>
+        /// <returns>Значение true, если пользователь существует, в противном случае - false.</returns>
+        Task<bool> IsUserExistFindByEmail(string email);
+
+        /// <summary>
+        /// Метод для выполнения входа пользователя через Google.
+        /// </summary>
+        /// <param name="email">Email пользователя.</param>
+        /// <returns>Объект <see cref="UserManagerDto"/>, содержащий информацию о результате входа и сгенерированный токен доступа.</returns>
+        Task<UserManagerDto> GoogleExternalLoginAsync(string email);
+
+        /// <summary>
+        /// Метод для регистрации пользователя через Google.
+        /// </summary>
+        /// <param name="claimsPrincipal">Утверждения пользователя полученные от провайдера аутентификации Google.</param>
+        /// <returns>Объект <see cref="UserManagerDto"/>, содержащий информацию о результате регистрации и сгенерированный токен доступа.</returns>
+        Task<UserManagerDto> GoogleExternalLoginRegisterAsync(ClaimsPrincipal claimsPrincipal);
     }
 }

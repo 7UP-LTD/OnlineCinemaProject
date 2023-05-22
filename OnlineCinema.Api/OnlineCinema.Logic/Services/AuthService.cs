@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -32,11 +33,14 @@ namespace OnlineCinema.Logic.Services
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Конструктор сервиса аутентификации и авторизации.
+        /// Конструктор класса AuthService.
         /// </summary>
         /// <param name="userManager">Менеджер пользователей.</param>
-        /// <param name="mapper">Маппер.</param>
-        /// <param name="configuration">Конфигурация.</param>
+        /// <param name="mapper">Маппер объектов.</param>
+        /// <param name="configuration">Конфигурация приложения.</param>
+        /// <param name="message">Сервис для работы с сообщениями.</param>
+        /// <param name="emailService">Сервис отправки электронной почты.</param>
+        /// <param name="managerResponse">Ответ от менеджера пользователей.</param>
         public AuthService(
             UserManager<UserEntity> userManager,
             IMapper mapper, 
@@ -51,6 +55,70 @@ namespace OnlineCinema.Logic.Services
             _message = message;
             _emailService = emailService;
             _managerResponse = managerResponse;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsUserExistFindByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user is not null;
+        }
+
+        /// <inheritdoc/>
+        public async Task<UserManagerDto> GoogleExternalLoginAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var userClaims = new[]
+            {
+                new Claim(ClaimTypes.Email, user!.Email!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName!)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: userClaims,
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return _managerResponse.EntrySuccessfully(tokenAsString);
+        }
+
+        /// <inheritdoc/>
+        public async Task<UserManagerDto> GoogleExternalLoginRegisterAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            var user = new UserEntity
+            {
+                UserName = claimsPrincipal.FindFirstValue(ClaimTypes.Email),
+                Email = claimsPrincipal.FindFirstValue(ClaimTypes.Email),
+                Name = claimsPrincipal.FindFirstValue(ClaimTypes.GivenName),
+                Surname = claimsPrincipal.FindFirstValue(ClaimTypes.Surname)
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
+                return _managerResponse.EntryDenied(new List<string> { "Не удалось зарегестрировать пользователя." });
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName!)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return _managerResponse.EntrySuccessfully(tokenAsString);
         }
 
         /// <inheritdoc/>

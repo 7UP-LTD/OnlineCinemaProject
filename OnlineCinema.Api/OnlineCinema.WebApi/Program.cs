@@ -43,7 +43,7 @@ namespace OnlineCinema.WebApi
             });
 
             builder.Services.AddIdentity<UserEntity, RoleEntity>(config =>
-                {
+            {
                     config.User.RequireUniqueEmail = true;
                     config.Password.RequiredLength = 6;
                     config.Password.RequireUppercase = false;
@@ -71,6 +71,10 @@ namespace OnlineCinema.WebApi
                     IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
                 };
+            }).AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = builder.Configuration["Google:Authentication:ClientId"]!;
+                googleOptions.ClientSecret = builder.Configuration["Google:Authentication:ClientSecret"]!;
             });
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>

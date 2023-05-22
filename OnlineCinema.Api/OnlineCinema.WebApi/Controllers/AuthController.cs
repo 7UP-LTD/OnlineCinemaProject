@@ -9,6 +9,14 @@ using OnlineCinema.Logic.Dtos.AuthDtos;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services.IServices;
 using OnlineCinema.Logic.Response;
+using Microsoft.AspNetCore.Identity;
+using OnlineCinema.Data.Entities;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Security.Claims;
 
 namespace OnlineCinema.WebApi.Controllers
 {
@@ -19,6 +27,7 @@ namespace OnlineCinema.WebApi.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -39,6 +48,42 @@ namespace OnlineCinema.WebApi.Controllers
             _authService = authService;
             _configuration = configuration;
             _logger = logger;
+        }
+
+        /// <summary>
+        /// Метод для внешней аутентификации пользователя через Google.
+        /// </summary>
+        /// <remarks>
+        /// Метод перенаправляет пользователя в Google. Для теста вводите адрес метода в адресную строку.
+        /// После умпешной внешней аутентификации выдает токен доступа JWT Bearer.
+        /// </remarks>
+        /// <returns>Возврат токена в случае успешной аутентификации.</returns>
+        /// <response code="200">Успешный вход получение токена доступа пользователя.</response>
+        /// <response code="400">Неправильный запрос для регистрации.</response>
+        /// <response code="500">Ошибка на стороне севрера.</response>
+        [HttpGet("GoogleLogin")]
+        [Authorize(AuthenticationSchemes = GoogleDefaults.AuthenticationScheme)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GoogleExternalLoginAsync()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email))
+                return BadRequest("Не удалось войти.");
+
+            UserManagerDto? result;
+            if (await _authService.IsUserExistFindByEmail(email!))
+            {
+                result = await _authService.GoogleExternalLoginAsync(email!);
+                return Ok(result.Message);
+            }
+
+            result = await _authService.GoogleExternalLoginRegisterAsync(User);
+            if (result.IsSuccess)
+                return Ok(result.Message);
+
+            return BadRequest(string.Join(',', result.Errors!));
         }
 
         /// <summary>
