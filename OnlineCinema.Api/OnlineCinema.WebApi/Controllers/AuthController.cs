@@ -73,13 +73,13 @@ namespace OnlineCinema.WebApi.Controllers
                 return BadRequest("Не удалось войти.");
 
             UserManagerDto? result;
-            if (await _authService.IsUserExistFindByEmail(email!))
+            if (!_authService.IsUserExistFindByEmail(email!).GetAwaiter().GetResult())
             {
-                result = await _authService.GoogleExternalLoginAsync(email!);
+                result = await _authService.GoogleExternalLoginRegisterAsync(User!);
                 return Ok(result.Message);
             }
 
-            result = await _authService.GoogleExternalLoginRegisterAsync(User);
+            result = await _authService.GoogleExternalLoginAsync(email);
             if (result.IsSuccess)
                 return Ok(result.Message);
 
@@ -98,6 +98,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserDto model)
         {
             try
@@ -138,6 +139,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string token, string redirectUrl)
         {
             try
@@ -170,6 +172,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
         {
             try
@@ -209,6 +212,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> ForgetPassword(string email, string redirectUrl)
         {
             try
@@ -241,6 +245,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(UserManagerDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto model)
         {
             try
