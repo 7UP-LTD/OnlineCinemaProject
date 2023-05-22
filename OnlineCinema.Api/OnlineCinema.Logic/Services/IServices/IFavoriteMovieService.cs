@@ -1,4 +1,6 @@
-﻿using OnlineCinema.Logic.Dtos;
+﻿using System;
+using System.Threading.Tasks;
+using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 
 namespace OnlineCinema.Logic.Services.IServices

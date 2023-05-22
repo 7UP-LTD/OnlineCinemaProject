@@ -1,4 +1,7 @@
-﻿namespace OnlineCinema.Data.Repositories
+﻿using System;
+using System.Collections.Generic;
+
+namespace OnlineCinema.Data.Repositories
 {
     /// <summary>
     /// Класс, представляющий страницу сущностей с пагинацией.

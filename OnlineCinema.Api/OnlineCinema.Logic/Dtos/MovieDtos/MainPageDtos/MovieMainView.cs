@@ -8,6 +8,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos
 
         public List<MovieView> TopMovies { get; set; }
         
+        public List<MovieView> recommendedMovies { get; set; }
         public List<GenreMovies> GenreMovies { get; set; }
         
         public List<string> Banners { get; set; }

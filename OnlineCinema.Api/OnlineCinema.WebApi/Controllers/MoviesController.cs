@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OnlineCinema.Data.Entities;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Services.IServices;
@@ -12,10 +14,12 @@ namespace OnlineCinema.WebApi.Controllers
     public class MoviesController : Controller
     {
         private readonly IMovieService _movieService;
+        private readonly UserManager<UserEntity> _userManager;
 
-        public MoviesController(IMovieService movieService)
+        public MoviesController(IMovieService movieService, UserManager<UserEntity> userManager)
         {
             _movieService = movieService;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -29,6 +33,24 @@ namespace OnlineCinema.WebApi.Controllers
         public async Task<IActionResult> GetMovies(int page, int pageSize, MovieFilter filter)
         {
             var moviesList = await _movieService.GetMovies(page, pageSize, filter);
+            return Ok(moviesList);
+        }
+
+        /// <summary>
+        /// Получение данных для главной страницы
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("main")]
+        public async Task<IActionResult> GetMoviesMain()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            Guid? userId = null;
+            if (user != null)
+            {
+                userId = user.Id;
+            }
+
+            var moviesList = await _movieService.GetMoviesForMain(userId);
             return Ok(moviesList);
         }
 

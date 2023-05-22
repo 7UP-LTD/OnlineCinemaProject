@@ -5,6 +5,8 @@ using OnlineCinema.Logic.Dtos;
 using System.Security.Claims;
 using OnlineCinema.Logic.Services.IServices;
 using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using OnlineCinema.Logic.Dtos.BlobDtos;
 
 namespace OnlineCinema.WebApi.Controllers

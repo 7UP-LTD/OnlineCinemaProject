@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
+using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
 using OnlineCinema.Logic.Dtos.TagDtos;
@@ -23,9 +24,11 @@ namespace OnlineCinema.Logic.Services
         private readonly IMovieGenreRepository _movieGenreRepository;
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
+        private readonly IGenreRepository _genreRepository;
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
-            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository)
+            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository,
+            IGenreRepository genreRepository)
         {
             _mapper = mapper;
             _logger = logger;
@@ -33,6 +36,7 @@ namespace OnlineCinema.Logic.Services
             _tagService = tagService;
             _movieTagRepository = movieTagRepository;
             _movieGenreRepository = movieGenreRepository;
+            _genreRepository = genreRepository;
         }
 
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
@@ -41,21 +45,52 @@ namespace OnlineCinema.Logic.Services
             var movies = await _movieRepository.GetPagedMovies(page, pageSize, filterEntity);
             return _mapper.Map<List<MovieDto>>(movies);
         }
-        
-        public async Task<MovieMainView> GetMoviesForMain()
+
+        public async Task<MovieMainView> GetMoviesForMain(Guid? userId)
         {
-            // Строка топ 5
-            // Строка Новое
-            // строка Рекомендации
-            // и ещё 3 строки по жанрам. Любые жанры какие хочешь можешь сделать.
-            
-            var filter = new MovieFilter();
+            var numberOfMovie = 5;
+            var mainModelView = new MovieMainView();
+            var filter = new MovieEntityFilter();
             filter.IsSeries = false;
+            var newMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+            mainModelView.NewMovies = _mapper.Map<List<MovieView>>(newMovies);
+
+            //TODO сделать метод выборки топ 5
+            var topMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+            mainModelView.TopMovies = _mapper.Map<List<MovieView>>(topMovies);
+
+            //TODO сделать метод выборки по пользователю
+            if (userId != null)
+            {
+                //GetAllUserMovieLikesAsync
+                var recommendedMovies = _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+                mainModelView.recommendedMovies = _mapper.Map<List<MovieView>>(recommendedMovies);
+            }
+
+            var useGenres = await GetGenre(3);
+            foreach (var genre in useGenres)
+            {
+                if (filter.Genres != null)
+                {
+                    filter.Genres.Clear();
+                    filter.Genres?.Add(genre.Id);
+                }
+                var movies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
+                var moviesView = _mapper.Map<GenreMovies>(movies);
+                moviesView.Genre = _mapper.Map<GenreDto>(genre);
+                var listMovies = new List<GenreMovies>();
+                listMovies.Add(moviesView);
+                mainModelView.GenreMovies = listMovies;
+            }
             
-            var movies = await _movieRepository.GetPagedMovies(1, 5, filterEntity);
-            var filterEntity = _mapper.Map<MovieEntityFilter>(filter);
-            var movies = await _movieRepository.GetPagedMovies(1, 5, filterEntity);
-            return _mapper.Map<List<MovieDto>>(movies);
+            return mainModelView;
+        }
+
+        private async Task<List<DicGenreEntity>> GetGenre(int numberOfGenres)
+        {
+            var genres = await _genreRepository.GetAllAsync();
+            var genreList = genres.Take(numberOfGenres).ToList();
+            return genreList;
         }
 
         public async Task<MovieDto> GetMovieById(Guid id)
