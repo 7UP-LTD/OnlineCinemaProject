@@ -79,10 +79,10 @@ namespace OnlineCinema.Data.Repositories
             return await _context.UserMovieLikes
                 .Include(x => x.Movie)
                 .ThenInclude(x => x.Genres)
-                .Where(x => x.isLike)
+                .Where(x => x.IsLike)
                 .Select(x => new
                 {
-                    x.isLike,
+                    isLike = x.IsLike,
                     GenreId = x.Movie.Genres.FirstOrDefault().DicGenreId
                 })
                 .GroupBy(x => x.GenreId)
@@ -101,7 +101,7 @@ namespace OnlineCinema.Data.Repositories
         {
             return await _context.UserMovieLikes
                 .Include(x => x.Movie)
-                .Where(x => x.isLike
+                .Where(x => x.IsLike
                             && (!genreId.HasValue
                                 || x.Movie.Genres.Select(g => g.DicGenreId).Contains(genreId.Value)
                             )
@@ -125,7 +125,7 @@ namespace OnlineCinema.Data.Repositories
                 .ThenInclude(x => x.Genres)
                 .Where(x =>
                     x.UserId == userId
-                    && x.isLike
+                    && x.IsLike
                 )
                 .GroupBy(x => x.Movie)
                 .Select(g => new

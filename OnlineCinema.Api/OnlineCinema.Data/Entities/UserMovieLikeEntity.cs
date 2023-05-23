@@ -10,6 +10,6 @@ namespace OnlineCinema.Data.Entities
         public Guid UserId { get; set; }
         public UserEntity User { get; set; }
         
-        public bool isLike { get; set; }
+        public bool IsLike { get; set; }
     }
 }

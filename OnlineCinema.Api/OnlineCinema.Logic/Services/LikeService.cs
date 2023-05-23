@@ -48,10 +48,10 @@ namespace OnlineCinema.Logic.Services
                                                                              l.UserId == userId);
             if (userMovieLike is not null)
             {
-                if (!userMovieLike.isLike)
+                if (!userMovieLike.IsLike)
                     return _response.SuccessResponse(userMovieLike.Id);
 
-                userMovieLike.isLike = false;
+                userMovieLike.IsLike = false;
                 await _likeRepository.UpdateAsync(userMovieLike);
                 return _response.SuccessResponse(userMovieLike.Id);
             }
@@ -64,7 +64,7 @@ namespace OnlineCinema.Logic.Services
             {
                 MovieId = movieId,
                 UserId = userId,
-                isLike = false,
+                IsLike = false,
                 CreatedDate = DateTime.Now
             };
 
@@ -79,10 +79,10 @@ namespace OnlineCinema.Logic.Services
                                                                              l.UserId == userId);
             if (userMovieLike is not null)
             {
-                if (userMovieLike.isLike)
+                if (userMovieLike.IsLike)
                     return _response.SuccessResponse(userMovieLike.Id);
 
-                userMovieLike.isLike = true;
+                userMovieLike.IsLike = true;
                 await _likeRepository.UpdateAsync(userMovieLike);
                 return _response.SuccessResponse(userMovieLike.Id);
             }
@@ -95,7 +95,7 @@ namespace OnlineCinema.Logic.Services
             {
                 MovieId = movieId,
                 UserId = userId,
-                isLike = true,
+                IsLike = true,
                 CreatedDate = DateTime.Now
             };
 
@@ -118,7 +118,7 @@ namespace OnlineCinema.Logic.Services
         /// <inheritdoc/>
         public async Task<ResponseDto> GetUserLikeMoviesAsync(Guid userId, int currentPage, int moviesPerPage)
         {
-            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserMovieLikes.All(u => u.UserId == userId && u.isLike),
+            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserMovieLikes.All(u => u.UserId == userId && u.IsLike),
                                                                           currentPage: currentPage,
                                                                           tEntityPerPage: moviesPerPage,
                                                                           includeProperty: "UserMovieLikes");
