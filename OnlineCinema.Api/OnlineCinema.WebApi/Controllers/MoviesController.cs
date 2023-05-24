@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCinema.Data.Entities;
@@ -71,10 +72,10 @@ namespace OnlineCinema.WebApi.Controllers
         /// </summary>
         /// <param name="movie">DTO фильма</param>
         /// <returns></returns>
+        [DisableRequestSizeLimit]
         [HttpPost]
-        public async Task<IActionResult> CreateMovie([FromBody] ChangeMovieRequest movie)
+        public async Task<IActionResult> CreateMovie([FromForm] ChangeMovieRequest movie)
         {
-            //TODO проверка на права по созданию
             var guid = await _movieService.CreateMovie(movie);
             return Ok(guid);
         }
@@ -86,7 +87,7 @@ namespace OnlineCinema.WebApi.Controllers
         /// <param name="movie">DTO измененного фильма</param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMovie(Guid id, [FromBody] ChangeMovieRequest movie)
+        public async Task<IActionResult> UpdateMovie(Guid id, [FromForm] ChangeMovieRequest movie)
         {
             try
             {
@@ -112,8 +113,6 @@ namespace OnlineCinema.WebApi.Controllers
             {
                 return NotFound();
             }
-
-            //TODO проверка на права для удаления
 
             await _movieService.DeleteMovie(id);
             return Ok();

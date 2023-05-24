@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace OnlineCinema.Logic.Dtos.MovieDtos
 {
@@ -13,12 +14,10 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         /// год выпуска фильма
         /// </summary>
         public DateTime ReleaseDate { get; set; }
-
-        /// <summary>
-        /// ссылка на картинку-заставку
-        /// </summary>
-        public string MoviePosterUrl { get; set; }
-
+        
+        public IFormFile? filePoster { get; set; } 
+        public IFormFile? fileBanner { get; set; }
+        
         /// <summary>
         /// сериал или нет
         /// </summary>

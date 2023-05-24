@@ -22,6 +22,8 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         /// </summary>
         public string MoviePosterUrl { get; set; }
 
+        public string? MovieBannerUrl { get; set; }
+
         /// <summary>
         /// сериал или нет
         /// </summary>
@@ -32,7 +34,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public Guid CountryId { get; set; }
 
         public DicCountryDto Country { get; set; }
-        
+
         public int AgeLimit { get; set; }
 
         public int Duration { get; set; }
@@ -44,6 +46,5 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
         public List<MovieGenreDto> Genres { get; set; } = new();
 
         public List<MovieTagDto> Tags { get; set; } = new();
-        
     }
 }

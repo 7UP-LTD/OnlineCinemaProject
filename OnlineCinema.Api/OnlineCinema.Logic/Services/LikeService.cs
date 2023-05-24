@@ -104,7 +104,7 @@ namespace OnlineCinema.Logic.Services
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseDto> DeleletLikeAsync(Guid movieId, Guid userId)
+        public async Task<ResponseDto> DeleleLikeAsync(Guid movieId, Guid userId)
         {
             var userMovieLike = await _likeRepository.GetOrDefaultAsync(l => l.MovieId == movieId &&
                                                                              l.UserId == userId);

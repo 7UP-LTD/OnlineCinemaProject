@@ -130,7 +130,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (user is null)
                     return NotFound("Пользователь не найден.");
 
-                var operationResponse = await _likeService.DeleletLikeAsync(movieId, user.Id);
+                var operationResponse = await _likeService.DeleleLikeAsync(movieId, user.Id);
                 if (operationResponse.IsSuccess)
                     return NoContent();
 

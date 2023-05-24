@@ -118,7 +118,7 @@ namespace OnlineCinema.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<MovieEntity>> GetTopUserMovies(Guid userId, int topRows)
+        public async Task<List<MovieEntity>> GetTopUserMovies(Guid? userId, int topRows)
         {
             return await _context.UserMovieLikes
                 .Include(x => x.Movie)

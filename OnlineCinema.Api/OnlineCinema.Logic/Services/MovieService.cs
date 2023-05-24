@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using OnlineCinema.Data.Entities;
 using OnlineCinema.Data.Filters;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
+using OnlineCinema.Logic.Dtos.BlobDtos;
 using OnlineCinema.Logic.Dtos.GenreDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;
@@ -24,10 +27,12 @@ namespace OnlineCinema.Logic.Services
         private readonly IMovieGenreRepository _movieGenreRepository;
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
+        private readonly IBlobService _blobService;
 
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
-            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository)
+            ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository,
+            IBlobService blobService)
         {
             _mapper = mapper;
             _logger = logger;
@@ -35,6 +40,7 @@ namespace OnlineCinema.Logic.Services
             _tagService = tagService;
             _movieTagRepository = movieTagRepository;
             _movieGenreRepository = movieGenreRepository;
+            _blobService = blobService;
         }
 
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
@@ -60,7 +66,7 @@ namespace OnlineCinema.Logic.Services
 
             if (userId != null)
             {
-                var recommendedMovies = await _movieRepository.GetTopMovies(numberOfMovie, userId);
+                var recommendedMovies = await _movieRepository.GetTopUserMovies(userId, numberOfMovie);
                 mainModelView.recommendedMovies = _mapper.Map<List<MovieView>>(recommendedMovies);
             }
 
@@ -102,6 +108,9 @@ namespace OnlineCinema.Logic.Services
             var movieEntity = _mapper.Map<MovieEntity>(movie);
             movieEntity.Id = Guid.NewGuid();
             movieEntity.CreatedDate = DateTime.Now;
+
+            await UploadFile(movie, movieEntity);
+
             var listOfTagsGuid = await GetTagsGuid(movie);
             movieEntity.Tags.Clear();
             foreach (var tagGuid in listOfTagsGuid)
@@ -200,8 +209,45 @@ namespace OnlineCinema.Logic.Services
         {
             var movieEntity = await _movieRepository.GetMovieById(id);
             _mapper.Map(movie, movieEntity);
-            if (movieEntity != null) await _movieRepository.UpdateAsync(movieEntity);
+            if (movieEntity != null)
+            {
+                await UploadFile(movie, movieEntity);
+                await _movieRepository.UpdateAsync(movieEntity);
+            }
         }
+
+        private async Task UploadFile(ChangeMovieRequest movie, MovieEntity? movieEntity)
+        {
+            if (movie.filePoster != null)
+            {
+                BlobResponseDto blobResponsePoster = await _blobService.UploadFileAsync(movie.filePoster);
+                if (blobResponsePoster.IsSuccess)
+                {
+                    if (!movieEntity.MoviePosterUrl.IsNullOrEmpty())
+                    {
+                        await _blobService.DeleteFileAsync(movieEntity.MoviePosterUrl);
+                    }
+
+                    movieEntity.MoviePosterUrl = blobResponsePoster.Url;
+                }
+            }
+
+            if (movie.fileBanner != null)
+            {
+                BlobResponseDto blobResponseBanner = await _blobService.UploadFileAsync(movie.fileBanner);
+
+                if (blobResponseBanner.IsSuccess)
+                {
+                    if (!movieEntity.MovieBannerUrl.IsNullOrEmpty())
+                    {
+                        await _blobService.DeleteFileAsync(movieEntity.MovieBannerUrl);
+                    }
+
+                    movieEntity.MovieBannerUrl = blobResponseBanner.Url;
+                }
+            }
+        }
+
 
         private async Task DeleteMovieCollections(Guid id)
         {
@@ -227,6 +273,16 @@ namespace OnlineCinema.Logic.Services
             {
                 _logger.LogError("Not found movie by id: {Id}", id);
                 throw new ArgumentException("Not found");
+            }
+
+            if (!movieEntity.MovieBannerUrl.IsNullOrEmpty())
+            {
+                await _blobService.DeleteFileAsync(movieEntity.MovieBannerUrl);
+            }
+
+            if (!movieEntity.MoviePosterUrl.IsNullOrEmpty())
+            {
+                await _blobService.DeleteFileAsync(movieEntity.MoviePosterUrl);
             }
 
             await _movieRepository.DeleteAsync(movieEntity);

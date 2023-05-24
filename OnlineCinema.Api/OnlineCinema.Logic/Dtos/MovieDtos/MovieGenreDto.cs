@@ -6,7 +6,7 @@ namespace OnlineCinema.Logic.Dtos.MovieDtos
 {
     public class MovieGenreDto
     {
-        public Guid GenreId { get; set; }
+        public Guid DicGenreId { get; set; }
        
         public Guid MovieId { get; set; }
        
