@@ -28,11 +28,12 @@ namespace OnlineCinema.Logic.Services
         private readonly IMovieTagRepository _movieTagRepository;
         private readonly ITagService _tagService;
         private readonly IBlobService _blobService;
+        private readonly IGenreRepository _genreRepository;
 
 
         public MovieService(IMapper mapper, ILogger<MovieService> logger, IMovieRepository movieRepository,
             ITagService tagService, IMovieTagRepository movieTagRepository, IMovieGenreRepository movieGenreRepository,
-            IBlobService blobService)
+            IBlobService blobService, IGenreRepository genreRepository)
         {
             _mapper = mapper;
             _logger = logger;
@@ -41,6 +42,7 @@ namespace OnlineCinema.Logic.Services
             _movieTagRepository = movieTagRepository;
             _movieGenreRepository = movieGenreRepository;
             _blobService = blobService;
+            _genreRepository = genreRepository;
         }
 
         public async Task<List<MovieDto>> GetMovies(int page, int pageSize, MovieFilter? filter)
@@ -71,17 +73,18 @@ namespace OnlineCinema.Logic.Services
             }
 
             var useGenres = await _movieRepository.GetTopGenres(numberOfMovie);
-            foreach (var genre in useGenres)
+            foreach (var genreId in useGenres)
             {
                 if (filter.Genres != null)
                 {
                     filter.Genres.Clear();
-                    filter.Genres?.Add(genre);
+                    filter.Genres?.Add(genreId);
                 }
 
                 var movies = await _movieRepository.GetPagedMovies(1, numberOfMovie, filter);
                 var moviesView = new GenreMovies();
                 moviesView.Movies = _mapper.Map<List<MovieView>>(movies);
+                var genre = await _genreRepository.GetOrDefaultAsync(x => x.Id == genreId);
                 moviesView.Genre = _mapper.Map<GenreDto>(genre);
                 var listMovies = new List<GenreMovies>();
                 listMovies.Add(moviesView);

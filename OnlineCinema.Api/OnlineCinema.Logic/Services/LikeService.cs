@@ -87,7 +87,7 @@ namespace OnlineCinema.Logic.Services
                 return _response.SuccessResponse(userMovieLike.Id);
             }
 
-            var movie = _movieRepository.GetOrDefaultAsync(m => m.Id == movieId);
+            var movie = await _movieRepository.GetOrDefaultAsync(m => m.Id == movieId);
             if (movie is null)
                 return _response.NotFound("Фильм не найден.");
 
@@ -104,7 +104,7 @@ namespace OnlineCinema.Logic.Services
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseDto> DeleleLikeAsync(Guid movieId, Guid userId)
+        public async Task<ResponseDto> DeleteLikeAsync(Guid movieId, Guid userId)
         {
             var userMovieLike = await _likeRepository.GetOrDefaultAsync(l => l.MovieId == movieId &&
                                                                              l.UserId == userId);
@@ -118,7 +118,7 @@ namespace OnlineCinema.Logic.Services
         /// <inheritdoc/>
         public async Task<ResponseDto> GetUserLikeMoviesAsync(Guid userId, int currentPage, int moviesPerPage)
         {
-            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserMovieLikes.All(u => u.UserId == userId && u.IsLike),
+            var tEntityPage = await _movieRepository.GetPageEntitiesAsync(filter: m => m.UserMovieLikes.Any(u => u.UserId == userId && u.IsLike),
                                                                           currentPage: currentPage,
                                                                           tEntityPerPage: moviesPerPage,
                                                                           includeProperty: "UserMovieLikes");

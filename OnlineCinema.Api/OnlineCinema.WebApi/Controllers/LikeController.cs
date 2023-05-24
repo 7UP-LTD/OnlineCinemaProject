@@ -56,7 +56,7 @@ namespace OnlineCinema.WebApi.Controllers
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> LikeMovieAsync([FromQuery] Guid movieId)
+        public async Task<IActionResult> LikeMovieAsync(Guid movieId)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace OnlineCinema.WebApi.Controllers
                 if (user is null)
                     return NotFound("Пользователь не найден.");
 
-                var operationResponse = await _likeService.DeleleLikeAsync(movieId, user.Id);
+                var operationResponse = await _likeService.DeleteLikeAsync(movieId, user.Id);
                 if (operationResponse.IsSuccess)
                     return NoContent();
 

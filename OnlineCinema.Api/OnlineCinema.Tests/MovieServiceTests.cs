@@ -32,10 +32,11 @@ namespace OnlineCinema.Tests
         private MovieRepository _movieRepository;
         private TagRepository _tagRepository;
         private ITagService _tagService;
-        private readonly IMovieTagRepository _movieTagRepository;
+        private IMovieTagRepository _movieTagRepository;
         private readonly IOperationResponse _response;
 
-        private readonly IMovieGenreRepository _movieGenreRepository;
+        private IMovieGenreRepository _movieGenreRepository;
+        private IGenreRepository _genreRepository;
 
         private Mock<IBlobService> _blobService = new();
 
@@ -49,9 +50,11 @@ namespace OnlineCinema.Tests
             _movieRepository = new MovieRepository(_appDbContext);
             _tagRepository = new TagRepository(_appDbContext);
             _blobService = new Mock<IBlobService>();
-
+            _movieTagRepository = new MovieTagRepository(_appDbContext);
+            _movieGenreRepository = new MovieGenreRepository(_appDbContext);
+            _genreRepository = new GenreRepository(_appDbContext);
             _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService, _movieTagRepository,
-                _movieGenreRepository, _blobService.Object);
+                _movieGenreRepository, _blobService.Object,_genreRepository );
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 
@@ -137,8 +140,9 @@ namespace OnlineCinema.Tests
         }
 
         [Test]
-        public async Task UpdateWithTag_ShouldUpdateMovieById()
+        public async Task UpdateWithTagsAndGenres_ShouldUpdateMovieById()
         {
+            
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
@@ -146,7 +150,6 @@ namespace OnlineCinema.Tests
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
-
 
             var movieDto = await _movieService.GetMovieById(movieId);
 
