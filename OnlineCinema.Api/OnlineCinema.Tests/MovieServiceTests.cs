@@ -2,14 +2,15 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using OnlineCinema.Data;
 using OnlineCinema.Data.Repositories;
 using OnlineCinema.Data.Repositories.IRepositories;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
-using OnlineCinema.Logic.Dtos.TagDtos;
 using OnlineCinema.Logic.Mapper;
 using OnlineCinema.Logic.Response.IResponse;
 using OnlineCinema.Logic.Services;
@@ -31,10 +32,13 @@ namespace OnlineCinema.Tests
         private MovieRepository _movieRepository;
         private TagRepository _tagRepository;
         private ITagService _tagService;
-        private readonly IMovieTagRepository _movieTagRepository;
+        private IMovieTagRepository _movieTagRepository;
         private readonly IOperationResponse _response;
-        private readonly IMovieGenreRepository _movieGenreRepository;
-    
+
+        private IMovieGenreRepository _movieGenreRepository;
+        private IGenreRepository _genreRepository;
+
+        private Mock<IBlobService> _blobService = new();
 
         [SetUp]
         public void SetUp()
@@ -45,10 +49,12 @@ namespace OnlineCinema.Tests
             _appDbContext.Database.EnsureDeleted();
             _movieRepository = new MovieRepository(_appDbContext);
             _tagRepository = new TagRepository(_appDbContext);
-            _movieService = new MovieService(_mapper, _logger, _movieRepository,
-                _tagService, _movieTagRepository, _movieGenreRepository);
-        
-            _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService, _movieTagRepository, _movieGenreRepository);
+            _blobService = new Mock<IBlobService>();
+            _movieTagRepository = new MovieTagRepository(_appDbContext);
+            _movieGenreRepository = new MovieGenreRepository(_appDbContext);
+            _genreRepository = new GenreRepository(_appDbContext);
+            _movieService = new MovieService(_mapper, _logger, _movieRepository, _tagService, _movieTagRepository,
+                _movieGenreRepository, _blobService.Object,_genreRepository );
             _tagService = new TagService(_tagRepository, _mapper, _response);
         }
 
@@ -59,7 +65,6 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
@@ -68,7 +73,6 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film Two",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
@@ -84,7 +88,6 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
@@ -100,7 +103,6 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
@@ -121,7 +123,6 @@ namespace OnlineCinema.Tests
             {
                 Name = "Film One",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
@@ -137,20 +138,19 @@ namespace OnlineCinema.Tests
             });
             if (ex != null) Assert.That(ex.Message, Is.EqualTo("Value cannot be null. (Parameter 'logger')"));
         }
-        
+
         [Test]
-        public async Task UpdateWithTag_ShouldUpdateMovieById()
+        public async Task UpdateWithTagsAndGenres_ShouldUpdateMovieById()
         {
+            
             var movieId = await _movieService.CreateMovie(new ChangeMovieRequest
             {
                 Name = "Film One",
                 ReleaseDate = DateTime.Now,
-                MoviePosterUrl = "//MoviePosterUrl",
                 IsSeries = false,
                 ContentUrl = "//ContentUrl"
             });
 
-            
             var movieDto = await _movieService.GetMovieById(movieId);
 
             movieDto.Name = "Film Edited";
@@ -160,6 +160,5 @@ namespace OnlineCinema.Tests
             var result = await _movieService.GetMovieById(movieId);
             Assert.That(result.Name, Is.EqualTo("Film Edited"));
         }
-
     }
 }

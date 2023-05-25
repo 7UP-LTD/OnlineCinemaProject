@@ -70,7 +70,7 @@ namespace OnlineCinema.Logic.Mapper
             CreateMap<MovieEntity, MovieView>();
             CreateMap<MovieEntity, GenreMovies>();
             CreateMap<DicGenreEntity, GenreDto>();
-          
+            
             #endregion
 
             #region DicGenreEntity/GenreDto

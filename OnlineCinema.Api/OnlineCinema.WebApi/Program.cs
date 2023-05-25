@@ -33,7 +33,7 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", ApiDescriptor.GetApiInfo(builder.Configuration));
@@ -43,14 +43,14 @@ namespace OnlineCinema.WebApi
             });
 
             builder.Services.AddIdentity<UserEntity, RoleEntity>(config =>
-            {
+                {
                     config.User.RequireUniqueEmail = true;
                     config.Password.RequiredLength = 6;
                     config.Password.RequireUppercase = false;
                     config.Password.RequireLowercase = false;
                     config.Password.RequireNonAlphanumeric = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+                }).AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -86,7 +86,7 @@ namespace OnlineCinema.WebApi
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<ITagRepository, TagRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-
+         
             builder.Services.AddTransient<IEmailSender, EmailSenderService>();
             builder.Services.AddTransient<IMessageService, MessageService>();
             builder.Services.AddTransient<IMovieService, MovieService>();
@@ -104,7 +104,7 @@ namespace OnlineCinema.WebApi
 
             builder.Services.AddTransient<IMovieTagRepository, MovieTagRepository>();
             builder.Services.AddTransient<IMovieGenreRepository, MovieGenreRepository>();
-            
+
             builder.Services.AddTransient<IUserManagerResponse, UserManagerResponse>();
             builder.Services.AddTransient<IOperationResponse, OperationResponse>();
             builder.Services.AddTransient<IGenreService, GenreService>();

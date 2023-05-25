@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using OnlineCinema.Logic.Dtos;
 using OnlineCinema.Logic.Dtos.MovieDtos;
 using OnlineCinema.Logic.Dtos.MovieDtos.MainPageDtos;

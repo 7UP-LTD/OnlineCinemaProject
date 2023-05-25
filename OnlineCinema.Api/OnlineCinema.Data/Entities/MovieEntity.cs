@@ -17,11 +17,9 @@ namespace OnlineCinema.Data.Entities
         /// <summary>
         /// ссылка на картинку-заставку
         /// </summary>
-        public string MoviePosterUrl { get; set; }
+        public string? MoviePosterUrl { get; set; }
 
-        public string MovieBannerUrl { get; set; }
-
-        //public Guid BannerFileId { get; set; }
+        public string? MovieBannerUrl { get; set; }
 
         /// <summary>
         /// сериал или нет
